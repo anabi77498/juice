@@ -26,7 +26,7 @@
        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
        - uses: actions/checkout@v3
 
-       - name: Use OCaml ${{ matrix.ocaml-compiler }}
+       - name: Use OCaml
         uses: ocaml/setup-ocaml@v2
         with:
 

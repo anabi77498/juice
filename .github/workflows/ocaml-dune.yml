@@ -9,6 +9,7 @@ jobs:
     - name: Use OCaml
       uses: ocaml/setup-ocaml@v2
       with:
+        - run: sudo apt install opam
         - run: opam install . --deps-only --with-test
         - run: opam exec -- dune build
         - run: opam exec -- dune runtest

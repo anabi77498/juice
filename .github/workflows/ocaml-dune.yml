@@ -4,11 +4,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Actions
+    - name: Actions
       uses: actions/checkout@v3
-      - name: Use OCaml
-        uses: ocaml/setup-ocaml@v2
-        with:
-          - run: opam install . --deps-only --with-test
-          - run: opam exec -- dune build
-          - run: opam exec -- dune runtest
+    - name: Use OCaml
+      uses: ocaml/setup-ocaml@v2
+      with:
+        - run: opam install . --deps-only --with-test
+        - run: opam exec -- dune build
+        - run: opam exec -- dune runtest

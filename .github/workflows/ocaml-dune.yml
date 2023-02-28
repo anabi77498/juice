@@ -1,15 +1,15 @@
-name: CI
-on: [ push ]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Actions
-      uses: actions/checkout@v3
-    - name: Use OCaml
-      uses: ocaml/setup-ocaml@v2
-      with:
-        - run: sudo apt install opam
-        - run: opam install . --deps-only --with-test
-        - run: opam exec -- dune build
-        - run: opam exec -- dune runtest
+name: OCaml Tasks
+ on: [ push ]
+ jobs:
+   ci-check:
+     runs-on: ubuntu-latest
+     steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v3
+     - name: Set up OCaml
+       uses: ocaml/setup-ocaml@v1.1.11
+       with:
+           ocaml-compiler: 4.14.x
+     - run: opam install . --deps-only --with-test
+     - run: opam exec -- dune build
+     - run: opam exec -- dune runtest

@@ -64,4 +64,16 @@ let from_json json =
       (*json |> member "history" |> to_list |> List.map transaction_of_json;*);
   }
 
+let create_account owner acc_type balance limit maximum =
+  {
+    owner;
+    account_type = acc_type |> parse_acc_type;
+    status = Active;
+    balance;
+    limit;
+    maximum;
+    assets = [];
+    history = [];
+  }
+
 let owner acc = acc.owner

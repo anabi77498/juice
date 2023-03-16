@@ -104,4 +104,5 @@ let deposit acc n =
   }
 
 let close acc = { acc with status = Closed }
+
 (*let latest_transaction acc = List.head acc.history*)

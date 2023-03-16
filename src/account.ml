@@ -91,6 +91,13 @@ let withdraw acc n =
     acc with
     balance = acc.balance - n;
     limit = acc.limit - n;
-    history = { transaction_type = "Withdrawl"; amount = n } :: acc.history;
+    history = { transaction_type = "Withdrawal"; amount = n } :: acc.history;
+  }
+
+let deposit acc n =
+  {
+    acc with
+    balance = acc.balance + n;
+    history = { transaction_type = "Deposit"; amount = n } :: acc.history;
   }
 (*let latest_transaction acc = List.head acc.history*)

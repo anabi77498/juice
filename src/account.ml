@@ -81,3 +81,7 @@ let status acc = acc.status
 let balance acc = acc.balance
 let limit acc = acc.limit
 let maximum acc = acc.maximum
+
+let rec assets_value = function
+  | [] -> 0
+  | h :: t -> h.current_value + assets_value t

@@ -1,2 +1,4 @@
 (library
- (name code))
+ (name finance)
+ (public_name Finance)
+ (libraries yojson ANSITerminal))

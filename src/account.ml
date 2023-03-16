@@ -14,8 +14,7 @@ type asset = {
 }
 
 type transaction = {
-  sender : string;
-  receiver : string;
+  transaction_type : string;
   amount : int;
 }
 
@@ -77,3 +76,8 @@ let create_account owner acc_type balance limit maximum =
   }
 
 let owner acc = acc.owner
+let account_type acc = acc.account_type
+let status acc = acc.status
+let balance acc = acc.balance
+let limit acc = acc.limit
+let maximum acc = acc.maximum

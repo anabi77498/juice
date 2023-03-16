@@ -87,12 +87,14 @@ let rec assets_value = function
   | h :: t -> h.current_value + assets_value t
 
 let withdraw acc n =
-  {
-    acc with
-    balance = acc.balance - n;
-    limit = acc.limit - n;
-    history = { transaction_type = "Withdrawal"; amount = n } :: acc.history;
-  }
+  if n <= acc.limit then
+    {
+      acc with
+      balance = acc.balance - n;
+      limit = acc.limit - n;
+      history = { transaction_type = "Withdrawal"; amount = n } :: acc.history;
+    }
+  else acc
 
 let deposit acc n =
   {
@@ -100,4 +102,6 @@ let deposit acc n =
     balance = acc.balance + n;
     history = { transaction_type = "Deposit"; amount = n } :: acc.history;
   }
+
+let close acc = { acc with status = Closed }
 (*let latest_transaction acc = List.head acc.history*)

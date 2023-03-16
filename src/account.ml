@@ -85,3 +85,12 @@ let maximum acc = acc.maximum
 let rec assets_value = function
   | [] -> 0
   | h :: t -> h.current_value + assets_value t
+
+let withdraw acc n =
+  {
+    acc with
+    balance = acc.balance - n;
+    limit = acc.limit - n;
+    history = { transaction_type = "Withdrawl"; amount = n } :: acc.history;
+  }
+(*let latest_transaction acc = List.head acc.history*)

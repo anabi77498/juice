@@ -18,7 +18,7 @@ val owner : t -> string
 (** [owner a] is the identifier of the owner in account [a]. Example: the
     [account] of Sample is ["Johnny"]. *)
 
-val assets : t -> string -> string list
+(*val assets : t -> string list*)
 (** [assets a] is a set-like list of all assets names from the account [a].
     Example: in Sample, the [assets] are ["stock 2"], ["stock 5"], and
     ["stock 6"]. *)

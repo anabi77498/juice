@@ -14,7 +14,7 @@ type status =
 
 type stock = {
   shares : int;
-  current_value : int;
+  cur_value_share : int;
   api_access : string;
 }
 
@@ -34,7 +34,10 @@ type t = {
   history : transaction list;
 }
 
-let stock_of_json lst = []
+let rec stock_of_json = function
+  | [] -> []
+  | (shares, cur_val, api) :: t ->
+      { shares; cur_value_share = cur_val; api_access = api } :: stock_of_json t
 
 let make_transaction = function
   | x ->
@@ -98,7 +101,7 @@ let maximum acc = acc.maximum
 
 let rec stocks_value = function
   | [] -> 0
-  | h :: t -> h.current_value + stocks_value t
+  | h :: t -> (h.cur_value_share * h.shares) + stocks_value t
 
 let withdraw acc n =
   if acc.status <> Active then raise InactiveAccount

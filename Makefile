@@ -13,3 +13,9 @@ utop:
 
 test:
 	OCAMLRUNPARAM=b dune exec test/main.exe
+
+check:
+	@bash check.sh
+
+finalcheck:
+	@bash check.sh final

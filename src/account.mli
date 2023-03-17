@@ -7,6 +7,8 @@
     For examples, the specifications in this interface reference the example
     "Sample" adventure found in [data/Sample.json]. *)
 
+type stock
+
 type t
 (** The abstract type of values representing accounts. *)
 

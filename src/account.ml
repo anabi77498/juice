@@ -34,19 +34,21 @@ type t = {
   history : transaction list;
 }
 
-let rec stock_of_json = function
-  | [] -> []
-  | (shares, cur_val, api) :: t ->
-      { shares; cur_value_share = cur_val; api_access = api } :: stock_of_json t
+let rec stock_of_json j =
+  let open Yojson.Basic.Util in
+  {
+    shares = j |> member "Shares" |> to_int;
+    cur_value_share = j |> member "Current Value Share" |> to_int;
+    api_access = j |> member "API Access" |> to_string;
+  }
 
-let make_transaction = function
-  | x ->
-      {
-        transaction_type = (if x > 0 then "Withdrawal" else "Deposit");
-        amount = x;
-      }
-
-let transaction_of_json lst = List.map make_transaction lst
+let transaction_of_json j =
+  let open Yojson.Basic.Util in
+  let amt = j |> member "amount" |> to_int in
+  {
+    transaction_type = (if amt > 0 then "Withdrawal" else "Deposit");
+    amount = amt;
+  }
 
 let parse_acc_type = function
   | "Savings" -> Savings
@@ -72,11 +74,9 @@ let from_json json =
     balance = json |> to_assoc |> List.assoc "balance" |> to_int;
     limit = json |> to_assoc |> List.assoc "limit" |> to_int;
     maximum = json |> to_assoc |> List.assoc "maximum" |> to_int;
-    stocks =
-      [] (*json |> member "stocks" |> to_list |> List.map stock_of_json;*);
+    stocks = json |> member "stocks" |> to_list |> List.map stock_of_json;
     history =
-      []
-      (*json |> member "history" |> to_list |> List.map transaction_of_json;*);
+      json |> member "history" |> to_list |> List.map transaction_of_json;
   }
 
 let create_account owner acc_type balance limit maximum =

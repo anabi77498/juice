@@ -24,3 +24,5 @@ val owner : t -> string
     ["stock 6"]. *)
 
 val create_account : string -> string -> int -> int -> int -> t
+(** [create_account] allows the user to create an account with a respective
+    [owner acc_type balance limit maximum]. *)

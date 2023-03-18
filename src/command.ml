@@ -1,5 +1,3 @@
-(* Note: You may introduce new code anywhere in this file. *)
-
 type object_phrase = string list
 
 type command =

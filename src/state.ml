@@ -1,8 +1,8 @@
-(* Note: You may introduce new code anywhere in this file. *)
-
-(* TODO: replace [unit] with a type of your own design. *)
+(* Type t holds your current account *)
 type t = { current_account : Account.t }
 
-type result =
-  | Legal of t
-  | Illegal
+(* Create account lets you set your account *)
+let create_account o acc_type balance limit maximum =
+  let open Account in
+  let x = Account.create_account o acc_type balance limit maximum in
+  { current_account = x }

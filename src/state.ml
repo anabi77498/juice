@@ -1,5 +1,5 @@
 (* Type t holds your current account *)
-type t = { current_account : Account.t }
+type t = { current_account : int }
 
 (* Create account lets you set your account *)
 let create_account o acc_type balance limit maximum =

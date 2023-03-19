@@ -10,11 +10,11 @@
 type t
 (** The abstract type of values representing accounts. *)
 
-val from_json : Yojson.Basic.t -> t
+val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
     JSON account representation. *)
 
-val owner : t -> string
+val owner : int -> string
 (** [owner a] is the identifier of the owner in account [a]. Example: the
     [account] of Sample is ["Johnny"]. *)
 
@@ -23,6 +23,6 @@ val owner : t -> string
     Example: in Sample, the [assets] are ["stock 2"], ["stock 5"], and
     ["stock 6"]. *)
 
-val create_account : string -> string -> int -> int -> int -> t
+val create_account : string -> string -> int -> int -> int -> int
 (** [create_account] allows the user to create an account with a respective
-    [owner acc_type balance limit maximum]. *)
+    [owner acc_type balance limit maximum] and returns an id value. *)

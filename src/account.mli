@@ -25,4 +25,4 @@ val owner : int -> string
 
 val create_account : string -> string -> int -> int -> int -> int
 (** [create_account] allows the user to create an account with a respective
-    [owner acc_type balance limit maximum]. *)
+    [owner acc_type balance limit maximum] and returns an id value. *)

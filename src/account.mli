@@ -22,3 +22,7 @@ val owner : int -> string
 (** [assets a] is a set-like list of all assets names from the account [a].
     Example: in Sample, the [assets] are ["stock 2"], ["stock 5"], and
     ["stock 6"]. *)
+
+val create_account : string -> string -> int -> int -> int -> t
+(** [create_account] allows the user to create an account with a respective
+    [owner acc_type balance limit maximum]. *)

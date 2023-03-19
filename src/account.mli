@@ -10,11 +10,11 @@
 type t
 (** The abstract type of values representing accounts. *)
 
-val from_json : Yojson.Basic.t -> t
+val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
     JSON account representation. *)
 
-val owner : t -> string
+val owner : int -> string
 (** [owner a] is the identifier of the owner in account [a]. Example: the
     [account] of Sample is ["Johnny"]. *)
 

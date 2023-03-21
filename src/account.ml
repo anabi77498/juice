@@ -26,6 +26,7 @@ type t = {
   id : int;
   owner : string;
   account_type : account;
+  account_interest : int;
   status : status;
   balance : int;
   limit : int;
@@ -72,6 +73,8 @@ let from_json json =
       account_type =
         json |> to_assoc |> List.assoc "account_type" |> to_string
         |> parse_acc_type;
+      account_interest =
+        json |> to_assoc |> List.assoc "account_interest" |> to_int;
       status =
         json |> to_assoc |> List.assoc "status" |> to_string |> parse_stat_type;
       balance = json |> to_assoc |> List.assoc "balance" |> to_int;
@@ -85,13 +88,14 @@ let from_json json =
   all_accounts := new_acc :: !all_accounts;
   new_acc.id
 
-let create_account owner acc_type balance limit maximum =
+let create_account owner acc_type interest balance limit maximum =
   assert (limit >= 0);
   let new_acc =
     {
       id = List.length !all_accounts;
       owner;
       account_type = acc_type |> parse_acc_type;
+      account_interest = interest;
       status = Active;
       balance;
       limit;
@@ -208,3 +212,7 @@ let transfer id1 id2 n =
   update_all_accounts id2 new_acc2
 
 (*let latest_transaction id = let acc = get_acc id in List.head acc.history*)
+
+let yearly_projected_balance id =
+  let acc = get_acc id in
+  acc.balance * (10000 + acc.account_interest) / 10000

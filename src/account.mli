@@ -35,9 +35,11 @@ val owner : int -> string
     Example: in Sample, the [assets] are ["stock 2"], ["stock 5"], and
     ["stock 6"]. *)
 
-val create_account : string -> string -> int -> int -> int -> int
+val create_account : string -> string -> int -> int -> int -> int -> int
 (** [create_account] allows the user to create an account with a respective
-    [owner acc_type balance limit maximum] and returns an id value. *)
+    [owner acc_type balance limit maximum] and returns an id value.
+    [interest] is the interest rate multiplied by 100. So a rate of 8.32% is 832
+    [balance] is the amount of money multiplied by 100. So a balance of $1,493.33 is 149333 *)
 
 val account_type : int -> account
 (** [account_type id] takes in an [id] and returns an account. *)

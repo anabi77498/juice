@@ -2,6 +2,8 @@ exception LimitExceeded of int
 exception MaximumExceeded of int
 exception InactiveAccount
 
+type test = { test : int }
+
 type account =
   | Savings
   | Checking

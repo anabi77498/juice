@@ -6,6 +6,25 @@ open Yojson.Basic.Util
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
 
+let rec save () =
+  print_endline "\nWould you like to save your changes? (y/n)";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | "y" ->
+      ANSITerminal.print_string [ ANSITerminal.green ] "Saving......\n"
+      (* TODO: IMPLEMENT SAVING TO A JSON FUNCTION *)
+  | "n" -> ()
+  | _ ->
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        "\n ⛔ Please enter a correct command ⛔ \n\n";
+      save ()
+
+let quit_save () =
+  save ();
+  ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting .......\n";
+  exit 0
+
 let quit () =
   ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting .......\n";
   exit 0
@@ -27,7 +46,7 @@ let rec inFile file_name =
       ANSITerminal.print_string [ ANSITerminal.blue ] "\n👔 Owner: ";
       print_string (Finance.Account.owner account ^ "\n");
       inFile file_name
-  | "quit" -> quit ()
+  | "quit" -> quit_save ()
   | _ ->
       ANSITerminal.print_string [ ANSITerminal.red ]
         "\n ⛔ Please enter a correct command ⛔ \n\n";

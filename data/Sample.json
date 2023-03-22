@@ -1,10 +1,12 @@
 {
   "owner" : "Juice Washington",
   "account_type" : "Checking",
+  "account_interest" : 22,
   "status" : "Active",
   "balance" : 100,
   "limit" : 250,
   "maximum" : 10,
-  "assets": [],
+  "stocks": [],
+  "properties": [],
   "history": []
 }

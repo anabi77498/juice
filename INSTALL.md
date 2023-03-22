@@ -6,4 +6,4 @@
 
 3. Ensure that all data (in JSON format) is stored in /data directory
 
-4. Run `make start-juice` to access application
+4. Run `make start-juice` to access the application

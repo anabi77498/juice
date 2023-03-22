@@ -4,6 +4,7 @@
 (* Utilize LWT (open) *)
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
+let rec inFile file_name = print_string "What would you like to do?"
 
 let rec accessFile file_name =
   ANSITerminal.print_string [ ANSITerminal.blue ] "\nAccesssing account: ";
@@ -13,7 +14,8 @@ let rec accessFile file_name =
   let file_path = direc_file_prefix ^ file_name ^ ".json" in
   if Sys.file_exists file_path then (
     ANSITerminal.print_string [ ANSITerminal.green ] ("\n" ^ "Currently in ");
-    print_string (file_name ^ "\n"))
+    print_string (file_name ^ "\n");
+    inFile file_name)
   else
     ANSITerminal.print_string [ ANSITerminal.red ]
       " ❌ This file cannot be found. Please check if file exits and accessible \
@@ -31,7 +33,6 @@ let getFile () =
   | file_name -> accessFile file_name
 
 let rec start_query () =
-  ANSITerminal.resize 80 50;
   print_endline "Would you like to access an account 🧾 ? (y/n)";
   print_string "> ";
   match read_line () with

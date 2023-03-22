@@ -17,7 +17,12 @@ let rec accessFile file_name =
   else
     ANSITerminal.print_string [ ANSITerminal.red ]
       " ❌ This file cannot be found. Please check if file exits and accessible \
-       ❌ \n"
+       ❌ \n";
+  print_endline "\nPlease enter the account name: ";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | file_name -> accessFile file_name
 
 let getFile () =
   print_string "> ";

@@ -5,11 +5,17 @@
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
 
+let rec accessFile file_name =
+  ANSITerminal.print_string [ ANSITerminal.blue ] "\nAccesssing account: ";
+  print_string (file_name ^ "\n");
+  ANSITerminal.print_string [ ANSITerminal.blue ] "Querying information ...\n";
+  ANSITerminal.print_string [ ANSITerminal.blue ] "Setting up system ...\n"
+
 let getFile () =
   print_string "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | file_name -> print_endline file_name
+  | file_name -> accessFile file_name
 
 let rec start_query () =
   ANSITerminal.resize 80 50;

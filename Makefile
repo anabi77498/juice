@@ -19,3 +19,6 @@ check:
 
 finalcheck:
 	@bash check.sh final
+
+start-juice:
+	OCAMLRUNPARAM=b dune exec bin/main.exe

@@ -9,7 +9,15 @@ let rec accessFile file_name =
   ANSITerminal.print_string [ ANSITerminal.blue ] "\nAccesssing account: ";
   print_string (file_name ^ "\n");
   ANSITerminal.print_string [ ANSITerminal.blue ] "Querying information ...\n";
-  ANSITerminal.print_string [ ANSITerminal.blue ] "Setting up system ...\n"
+  ANSITerminal.print_string [ ANSITerminal.blue ] "Setting up system ...\n";
+  let file_path = direc_file_prefix ^ file_name ^ ".json" in
+  if Sys.file_exists file_path then (
+    ANSITerminal.print_string [ ANSITerminal.green ] ("\n" ^ "Currently in ");
+    print_string (file_name ^ "\n"))
+  else
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ❌ This file cannot be found. Please check if file exits and accessible \
+       ❌ \n"
 
 let getFile () =
   print_string "> ";

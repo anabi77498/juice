@@ -1,0 +1,10 @@
+{
+  "owner" : "Juice Washington",
+  "account_type" : "Checking",
+  "status" : "Active",
+  "balance" : 100,
+  "limit" : 250,
+  "maximum" : 10,
+  "assets": [],
+  "history": []
+}

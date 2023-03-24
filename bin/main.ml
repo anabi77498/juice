@@ -32,6 +32,11 @@ let quit () =
 let parse_json file_name =
   Yojson.Basic.from_file (direc_file_prefix ^ file_name ^ ".json")
 
+let create_account () =
+  ANSITerminal.print_string [ ANSITerminal.yellow ]
+    "\nSorry, this feature isn't available at the moment but will be soon!";
+  quit ()
+
 let rec inFile file_name =
   let account = Finance.Account.from_json (file_name |> parse_json) in
   print_endline "\nWhat would you like to do?";
@@ -79,7 +84,7 @@ let rec accessFile file_name =
     | file_name -> accessFile file_name)
 
 let rec start_query () =
-  print_endline "Would you like to access an account 🧾 ? (y/n)";
+  print_endline "Would you like to access an existing account 🧾 ? (y/n)";
   print_string "> ";
   match read_line () with
   | exception End_of_file -> ()
@@ -88,10 +93,21 @@ let rec start_query () =
       print_string "> ";
       match read_line () with
       | exception End_of_file -> ()
+      | "quit" -> quit ()
       | file_name -> accessFile file_name)
-  | "n" ->
-      print_endline "\nWould you like to make an account 🔨?";
-      print_string "> "
+  | "n" -> (
+      print_endline "\nWould you like to make an account 🔨 ? (y/n)";
+      print_string "> ";
+      match read_line () with
+      | exception End_of_file -> ()
+      | "y" -> create_account ()
+      | "n" ->
+          print_string "\n";
+          start_query ()
+      | _ ->
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            "\n ⛔ Please enter a correct command ⛔ \n\n";
+          start_query ())
   | "quit" -> quit ()
   | _ ->
       ANSITerminal.print_string [ ANSITerminal.red ]

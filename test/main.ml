@@ -9,6 +9,11 @@ let sample = sample_yo |> from_json
 let owner_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.owner sample)
 
-let owner_tests = [ owner_test "sample owner" "Johnny" sample ]
+let owner_tests =
+  [
+    owner_test "sample owner" "Johnny" sample;
+    owner_test "sample owner" "Johnny" sample;
+  ]
+
 let tests = "test suite" >::: List.flatten [ owner_tests ]
 let _ = run_test_tt_main tests

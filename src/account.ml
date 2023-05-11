@@ -301,7 +301,7 @@ let remove_property i prop_id =
 
 let set_rent i prop_id rent =
   let prop = identify_property i prop_id in
-  let old_prop = remove_property i prop_id in
+  remove_property i prop_id;
   let acc = get_acc i in
   let new_acc =
     {

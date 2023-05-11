@@ -19,3 +19,14 @@ check:
 
 finalcheck:
 	@bash check.sh final
+
+start-juice:
+	OCAMLRUNPARAM=b dune exec bin/main.exe
+
+zip:
+	rm -f juice.zip
+	zip -r juice.zip . -x@exclude.lst
+
+clean:
+	dune clean
+	rm -f juice.zip

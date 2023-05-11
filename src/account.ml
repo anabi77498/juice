@@ -22,15 +22,24 @@ type transaction = {
   amount : int;
 }
 
+type property = {
+  remaining_mortgage : int;
+  mortgage_monthly_cost : int;
+  current_rental_income : int;
+  hoa_upkeep_and_other_expenses : int;
+}
+
 type t = {
   id : int;
   owner : string;
   account_type : account;
+  account_interest : int;
   status : status;
   balance : int;
   limit : int;
   maximum : int;
   stocks : stock list;
+  properties : property list;
   history : transaction list;
 }
 
@@ -42,6 +51,16 @@ let rec stock_of_json j =
     shares = j |> member "Shares" |> to_int;
     cur_value_share = j |> member "Current Value Share" |> to_int;
     api_access = j |> member "API Access" |> to_string;
+  }
+
+let rec property_of_json j =
+  let open Yojson.Basic.Util in
+  {
+    remaining_mortgage = j |> member "Remaining Mortgage" |> to_int;
+    mortgage_monthly_cost = j |> member "Mortgage Monthly Cost" |> to_int;
+    current_rental_income = j |> member "Current Rental Income" |> to_int;
+    hoa_upkeep_and_other_expenses =
+      j |> member "Hoa, Upkeep, and other Expenses" |> to_int;
   }
 
 let transaction_of_json j =
@@ -72,12 +91,16 @@ let from_json json =
       account_type =
         json |> to_assoc |> List.assoc "account_type" |> to_string
         |> parse_acc_type;
+      account_interest =
+        json |> to_assoc |> List.assoc "account_interest" |> to_int;
       status =
         json |> to_assoc |> List.assoc "status" |> to_string |> parse_stat_type;
       balance = json |> to_assoc |> List.assoc "balance" |> to_int;
       limit = json |> to_assoc |> List.assoc "limit" |> to_int;
       maximum = json |> to_assoc |> List.assoc "maximum" |> to_int;
       stocks = json |> member "stocks" |> to_list |> List.map stock_of_json;
+      properties =
+        json |> member "properties" |> to_list |> List.map property_of_json;
       history =
         json |> member "history" |> to_list |> List.map transaction_of_json;
     }
@@ -85,18 +108,20 @@ let from_json json =
   all_accounts := new_acc :: !all_accounts;
   new_acc.id
 
-let create_account owner acc_type balance limit maximum =
+let create_account owner acc_type interest balance limit maximum =
   assert (limit >= 0);
   let new_acc =
     {
       id = List.length !all_accounts;
       owner;
       account_type = acc_type |> parse_acc_type;
+      account_interest = interest;
       status = Active;
       balance;
       limit;
       maximum;
       stocks = [];
+      properties = [];
       history = [];
     }
   in
@@ -208,3 +233,33 @@ let transfer id1 id2 n =
   update_all_accounts id2 new_acc2
 
 (*let latest_transaction id = let acc = get_acc id in List.head acc.history*)
+
+let yearly_projected_balance id =
+  let acc = get_acc id in
+  acc.balance * (10000 + acc.account_interest) / 10000
+
+let approved_mortgage id mortgage_value =
+  withdraw id (mortgage_value / 4);
+  let acc = get_acc id in
+  let new_acc =
+    {
+      acc with
+      properties =
+        {
+          remaining_mortgage = mortgage_value;
+          mortgage_monthly_cost = mortgage_value / 12 / 30;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        }
+        :: acc.properties;
+    }
+  in
+  update_all_accounts id new_acc;
+  let msg = "Approved Mortgage" in
+  msg
+
+let get_mortgage id property_value =
+  let acc = get_acc id in
+  if acc.balance > property_value / 5 then
+    approved_mortgage id (property_value / 5 * 4)
+  else "Not Enough Funds for Said Property"

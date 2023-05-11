@@ -1,15 +1,31 @@
 name: OCaml Tasks
- on: [ push ]
- jobs:
-   ci-check:
-     runs-on: ubuntu-latest
-     steps:
-     - name: Checkout Repository
-       uses: actions/checkout@v3
-     - name: Set up OCaml
-       uses: ocaml/setup-ocaml@v1.1.11
-       with:
-           ocaml-compiler: 4.14.x
-     - run: opam install . --deps-only --with-test
-     - run: opam exec -- dune build
-     - run: opam exec -- dune runtest
+on: [push]
+jobs:
+  ci-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v1.1.11
+        with:
+          ocaml-compiler: 4.14.x
+      - name: Install OCaml Dependencies
+        run: opam install . --deps-only --with-test
+      - name: Compile OCaml
+        run: >
+          eval $(opam env);
+          make build
+      - name: Run Unit Tests
+        run: >
+          eval $(opam env);
+          make test;
+      - name: Generate ODoc Documentation
+        run: >
+          eval $(opam env); 
+          make doc
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build Artifact
+          path: _build/*

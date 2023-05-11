@@ -1,0 +1,22 @@
+---
+# Members of your group.
+group:
+  - name: Giorgi Berndt
+    netid: gb449
+  - name: Asad Nabi
+    netid: an448
+  - name: Nathan Maidi
+    netid: nm542
+# Your PM.
+pm:
+  name: Robert Zhao
+  netid: rz87
+# Project title
+title: "Juice Finance"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "anabi77498/juice (github.com)"
+# If you have no demo screencast, replace the url string with an empty string ""
+demo-video-url: ""
+# Write a short, attention-grabbing description of your project.
+desc: >
+  Juice Finance allows for organization, management and insights of a bank account and assets. It includes functionality such as creating an account log, recording property & stock purchases, recording account queries, recording withdrawal/deposits, and see project balance based upon account interest rates. The interface is via the terminal and allows for frequent use and saving of your changes.

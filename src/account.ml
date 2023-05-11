@@ -105,7 +105,7 @@ let from_json json =
         json |> member "history" |> to_list |> List.map transaction_of_json;
     }
   in
-  all_accounts := new_acc :: !all_accounts;
+  all_accounts := !all_accounts @ [ new_acc ];
   new_acc.id
 
 let create_account owner acc_type interest balance limit maximum =
@@ -125,55 +125,64 @@ let create_account owner acc_type interest balance limit maximum =
       history = [];
     }
   in
-  all_accounts := new_acc :: !all_accounts;
+  all_accounts := !all_accounts @ [ new_acc ];
   new_acc.id
 
-let get_acc id = List.nth !all_accounts id
+let get_acc i = List.nth !all_accounts i
 
-let update_all_accounts id new_acc =
+let update_all_accounts u new_acc =
   all_accounts :=
-    List.mapi (fun i x -> if i = id then new_acc else x) !all_accounts
+    List.mapi (fun i x -> if i = u then new_acc else x) !all_accounts
 
-let owner id =
-  let acc = get_acc id in
+let string_of_account = function
+  | Savings -> "Savings"
+  | Checking -> "Checking"
+  | Credit -> "Credit"
+
+let status_of_account = function
+  | Active -> "Active"
+  | Inactive -> "Inactive"
+
+let owner i =
+  let acc = get_acc i in
   acc.owner
 
-let account_type id =
-  let acc = get_acc id in
-  acc.account_type
+let account_type i =
+  let acc = get_acc i in
+  string_of_account acc.account_type
 
-let status id =
-  let acc = get_acc id in
-  acc.status
+let status i =
+  let acc = get_acc i in
+  status_of_account acc.status
 
-let balance id =
-  let acc = get_acc id in
+let balance i =
+  let acc = get_acc i in
   acc.balance
 
-let limit id =
-  let acc = get_acc id in
+let limit i =
+  let acc = get_acc i in
   acc.limit
 
-let maximum id =
-  let acc = get_acc id in
+let maximum i =
+  let acc = get_acc i in
   acc.maximum
 
-let stocks id =
+let stocks i =
   (*when writing interface, do not include this function, its not available to
     the user*)
-  let acc = get_acc id in
+  let acc = get_acc i in
   acc.stocks
 
-let stocks_value id =
+let stocks_value i =
   let rec helper lst =
     match lst with
     | [] -> 0
     | h :: t -> (h.cur_value_share * h.shares) + helper t
   in
-  id |> stocks |> helper
+  i |> stocks |> helper
 
-let withdraw id n =
-  let acc = get_acc id in
+let withdraw i n =
+  let acc = get_acc i in
   let new_acc =
     if acc.status <> Active then raise InactiveAccount
     else if acc.balance - n < acc.limit then raise (LimitExceeded n)
@@ -185,10 +194,10 @@ let withdraw id n =
       }
     else raise (MaximumExceeded n)
   in
-  update_all_accounts id new_acc
+  update_all_accounts i new_acc
 
-let deposit id n =
-  let acc = get_acc id in
+let deposit i n =
+  let acc = get_acc i in
   let new_acc =
     if acc.status <> Active then raise InactiveAccount
     else
@@ -198,17 +207,17 @@ let deposit id n =
         history = { transaction_type = "Deposit"; amount = n } :: acc.history;
       }
   in
-  update_all_accounts id new_acc
+  update_all_accounts i new_acc
 
-let activate id =
-  let acc = get_acc id in
+let activate i =
+  let acc = get_acc i in
   let new_acc = { acc with status = Active } in
-  update_all_accounts id new_acc
+  update_all_accounts i new_acc
 
-let deactivate id =
-  let acc = get_acc id in
+let deactivate i =
+  let acc = get_acc i in
   let new_acc = { acc with status = Inactive } in
-  update_all_accounts id new_acc
+  update_all_accounts i new_acc
 
 let transfer id1 id2 n =
   let acc1 = get_acc id1 in
@@ -234,13 +243,13 @@ let transfer id1 id2 n =
 
 (*let latest_transaction id = let acc = get_acc id in List.head acc.history*)
 
-let yearly_projected_balance id =
-  let acc = get_acc id in
+let yearly_projected_balance i =
+  let acc = get_acc i in
   acc.balance * (10000 + acc.account_interest) / 10000
 
-let approved_mortgage id mortgage_value =
-  withdraw id (mortgage_value / 4);
-  let acc = get_acc id in
+let approved_mortgage i mortgage_value =
+  withdraw i (mortgage_value / 4);
+  let acc = get_acc i in
   let new_acc =
     {
       acc with
@@ -254,12 +263,12 @@ let approved_mortgage id mortgage_value =
         :: acc.properties;
     }
   in
-  update_all_accounts id new_acc;
+  update_all_accounts i new_acc;
   let msg = "Approved Mortgage" in
   msg
 
-let get_mortgage id property_value =
-  let acc = get_acc id in
+let get_mortgage i property_value =
+  let acc = get_acc i in
   if acc.balance > property_value / 5 then
-    approved_mortgage id (property_value / 5 * 4)
+    approved_mortgage i (property_value / 5 * 4)
   else "Not Enough Funds for Said Property"

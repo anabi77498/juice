@@ -44,10 +44,10 @@ val create_account : string -> string -> int -> int -> int -> int -> int
     [interest] is the interest rate multiplied by 100. So a rate of 8.32% is 832
     [balance] is the amount of money multiplied by 100. So a balance of $1,493.33 is 149333 *)
 
-val account_type : int -> account
+val account_type : int -> string
 (** [account_type id] takes in an [id] and returns an account. *)
 
-val status : int -> status
+val status : int -> string
 (** [status id] takes in an [id] and returns the status of the respective account. *)
 val balance : int -> int
 (** [balance id] takes in an [id] and returns the balance of the respective account. *)

@@ -5,10 +5,57 @@ open OUnit2
 let data_dir_prefix = "data" ^ Filename.dir_sep
 let sample_yo = Yojson.Basic.from_file (data_dir_prefix ^ "Sample.json")
 let sample = sample_yo |> from_json
+let account1_id = create_account "Sam" "Savings" 5 6000 1000 500
+let account2_id = create_account "James" "Checking" 0 200 0 150
+let account3_id = create_account "Alex" "Credit" 10 0 5 0
 
-let owner_test name expected acc =
-  name >:: fun _ -> assert_equal expected (Account.owner sample)
+let owner_test (name : string) (expected : string) (acc : int) =
+  name >:: fun _ -> assert_equal expected (Account.owner acc)
 
-let owner_tests = [ owner_test "sample owner" "Johnny" sample ]
+let acc_type_test (name : string) (expected : string) (acc : int) =
+  name >:: fun _ -> assert_equal expected (Account.account_type acc)
+
+let status_test (name : string) (expected : string) (acc : int) =
+  name >:: fun _ -> assert_equal expected (Account.status acc)
+
+let balance_test name expected acc =
+  name >:: fun _ -> assert_equal expected (Account.balance acc)
+
+let limit_test name expected acc =
+  name >:: fun _ -> assert_equal expected (Account.limit acc)
+
+let maximum_test name expected acc =
+  name >:: fun _ -> assert_equal expected (Account.maximum acc)
+
+let _ = Account.withdraw sample 5
+
+let owner_tests =
+  [
+    owner_test "sample owner" "Juice Washington" sample;
+    owner_test "account1 owner" "Sam" account1_id;
+    owner_test "account2 owner" "James" account2_id;
+    owner_test "account3 owner" "Alex" account3_id;
+    acc_type_test "sample account type" "Checking" sample;
+    acc_type_test "account1 account type" "Savings" account1_id;
+    acc_type_test "account2 account type" "Checking" account2_id;
+    acc_type_test "account3 account type" "Credit" account3_id;
+    status_test "sample status" "Active" sample;
+    status_test "account1 status" "Active" account1_id;
+    status_test "account2 status" "Active" account2_id;
+    status_test "account3 status" "Active" account3_id;
+    balance_test "sample balance" 100 sample;
+    balance_test "account1 balance" 6000 account1_id;
+    balance_test "account2 balance" 200 account2_id;
+    balance_test "account3 balance" 0 account3_id;
+    limit_test "sample limit" 250 sample;
+    limit_test "account1 limit" 1000 account1_id;
+    limit_test "account2 limit" 0 account2_id;
+    limit_test "account3 limit" 5 account3_id;
+    maximum_test "sample maximum" 10 sample;
+    maximum_test "account1 maximum" 500 account1_id;
+    maximum_test "account2 maximum" 150 account2_id;
+    maximum_test "account3 maximum" 0 account3_id;
+  ]
+
 let tests = "test suite" >::: List.flatten [ owner_tests ]
 let _ = run_test_tt_main tests

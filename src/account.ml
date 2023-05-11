@@ -23,6 +23,7 @@ type transaction = {
 }
 
 type property = {
+  id : int;
   remaining_mortgage : int;
   mortgage_monthly_cost : int;
   current_rental_income : int;
@@ -56,6 +57,7 @@ let rec stock_of_json j =
 let rec property_of_json j =
   let open Yojson.Basic.Util in
   {
+    id = j |> member "id" |> to_int;
     remaining_mortgage = j |> member "Remaining Mortgage" |> to_int;
     mortgage_monthly_cost = j |> member "Mortgage Monthly Cost" |> to_int;
     current_rental_income = j |> member "Current Rental Income" |> to_int;
@@ -247,7 +249,7 @@ let yearly_projected_balance i =
   let acc = get_acc i in
   acc.balance * (10000 + acc.account_interest) / 10000
 
-let approved_mortgage i mortgage_value =
+let approved_mortgage i prop_id mortgage_value =
   withdraw i (mortgage_value / 4);
   let acc = get_acc i in
   let new_acc =
@@ -255,6 +257,7 @@ let approved_mortgage i mortgage_value =
       acc with
       properties =
         {
+          id = prop_id;
           remaining_mortgage = mortgage_value;
           mortgage_monthly_cost = mortgage_value / 12 / 30;
           current_rental_income = 0;
@@ -267,8 +270,17 @@ let approved_mortgage i mortgage_value =
   let msg = "Approved Mortgage" in
   msg
 
-let get_mortgage i property_value =
+let get_mortgage i prop_id property_value =
   let acc = get_acc i in
   if acc.balance > property_value / 5 then
-    approved_mortgage i (property_value / 5 * 4)
+    approved_mortgage i prop_id (property_value / 5 * 4)
   else "Not Enough Funds for Said Property"
+
+let rec identify_property_helper (properties : property list) prop_id =
+  match properties with
+  | [] -> failwith "Property does not exist"
+  | h :: t -> if h.id = prop_id then h else identify_property_helper t prop_id
+
+let identify_property i prop_id =
+  let acc = get_acc i in
+  identify_property_helper acc.properties prop_id

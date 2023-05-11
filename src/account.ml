@@ -284,3 +284,37 @@ let rec identify_property_helper (properties : property list) prop_id =
 let identify_property i prop_id =
   let acc = get_acc i in
   identify_property_helper acc.properties prop_id
+
+let rec remove_property_helper (properties : property list) prop_id
+    (acc : property list) =
+  match properties with
+  | [] -> acc
+  | h :: t ->
+      if h.id = prop_id then remove_property_helper t prop_id acc
+      else remove_property_helper t prop_id (h :: acc)
+
+let remove_property i prop_id =
+  let acc = get_acc i in
+  let new_property_list = remove_property_helper acc.properties prop_id [] in
+  let new_acc = { acc with properties = new_property_list } in
+  update_all_accounts i new_acc
+
+let set_rent i prop_id rent =
+  let prop = identify_property i prop_id in
+  let old_prop = remove_property i prop_id in
+  let acc = get_acc i in
+  let new_acc =
+    {
+      acc with
+      properties =
+        {
+          id = prop_id;
+          remaining_mortgage = prop.remaining_mortgage;
+          mortgage_monthly_cost = prop.mortgage_monthly_cost;
+          current_rental_income = rent;
+          hoa_upkeep_and_other_expenses = prop.hoa_upkeep_and_other_expenses;
+        }
+        :: acc.properties;
+    }
+  in
+  update_all_accounts i new_acc

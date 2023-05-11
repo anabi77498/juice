@@ -76,3 +76,4 @@ val deactivate : int -> unit
 val transfer : int -> int -> int -> unit
 (** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n] money between those two accounts. *)
 
+val yearly_projected_balance : int -> int

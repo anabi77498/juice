@@ -7,7 +7,6 @@
     For examples, the specifications in this interface reference the example
     "Sample" adventure found in [data/Sample.json]. *)
 
-type t
 (** The abstract type of values representing accounts. *)
 
 type account
@@ -21,6 +20,16 @@ type stock
 
 type transaction
 (** The abstract type used to represent the transactions of account. *)
+
+type property = {
+  id : int;
+  remaining_mortgage : int;
+  mortgage_monthly_cost : int;
+  current_rental_income : int;
+  hoa_upkeep_and_other_expenses : int;
+}
+
+type t
 
 val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
@@ -77,3 +86,18 @@ val transfer : int -> int -> int -> unit
 (** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n] money between those two accounts. *)
 
 val yearly_projected_balance : int -> int
+
+val approved_mortgage : int -> int -> int -> string
+
+val get_mortgage : int -> int -> int -> string
+
+val identify_property_helper : property list -> int -> property
+
+val identify_property : int -> int -> property
+
+val remove_property_helper : property list -> int -> property list -> property list
+
+val remove_property : int -> int -> unit
+
+val set_rent : int -> int -> int -> unit
+

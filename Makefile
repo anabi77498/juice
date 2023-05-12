@@ -20,7 +20,7 @@ check:
 finalcheck:
 	@bash check.sh final
 
-start-juice:
+juice:
 	OCAMLRUNPARAM=b dune exec bin/main.exe
 
 zip:

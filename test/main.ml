@@ -27,6 +27,7 @@ let limit_test name expected acc =
 let maximum_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.maximum acc)
 
+
 let withdraw_test name expected acc n =
   name >:: fun _ -> assert_equal expected (Account.withdraw acc n)
 
@@ -46,6 +47,7 @@ let transfer_test name expected acc1 acc2 n =
   name >:: fun _ -> assert_equal expected (Account.transfer acc1 acc2 n)
 
 (*withdraw,deposit,activate,deactivate,transfer*)
+
 let owner_tests =
   [
     owner_test "sample owner" "Juice Washington" sample;
@@ -76,5 +78,21 @@ let owner_tests =
     (*withdraw_raise "MaximumExceeded" (MaximumExceeded 11) sample 11;*)
   ]
 
-let tests = "test suite" >::: List.flatten [ owner_tests ]
+let accounta_id = create_account "Sam" "Savings" 500 600000 1000 500
+
+(* owner acc_type interest balance limit maximum *)
+let accountb_id = create_account "James" "Checking" 0 20000 0 150
+let accountc_id = create_account "Alex" "Credit" 1000 0 5 0
+
+let projected_balance_test (name : string) (expected : int) (acc : int) =
+  name >:: fun _ -> assert_equal expected (Account.yearly_projected_balance acc)
+
+let property_tests =
+  [
+    projected_balance_test "balance on Sam" 630000 accounta_id;
+    projected_balance_test "balance on James" 20000 accountb_id;
+    projected_balance_test "balance on James" 0 accountc_id;
+  ]
+
+let tests = "test suite" >::: List.flatten [ owner_tests; property_tests ]
 let _ = run_test_tt_main tests

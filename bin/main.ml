@@ -3,8 +3,24 @@
 
 (* Utilize Lwt (open) *)
 open Yojson.Basic.Util
+open Lwt
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
+
+let rec wait_fun start_time seconds =
+  let current_time = Unix.gettimeofday () in
+  let elapsed_time = current_time -. start_time in
+  if elapsed_time >= seconds then () else wait_fun start_time seconds
+
+let wait seconds =
+  print_endline "";
+  let start_time = Unix.gettimeofday () in
+  wait_fun start_time seconds
+
+let wait_alt seconds =
+  print_string "";
+  let start_time = Unix.gettimeofday () in
+  wait_fun start_time seconds
 
 let rec save () =
   print_endline "\nWould you like to save your changes? (y/n)";
@@ -22,11 +38,27 @@ let rec save () =
 
 let quit_save () =
   save ();
-  ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting .......\n";
+  ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".\n";
   exit 0
 
 let quit () =
-  ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting .......\n";
+  ANSITerminal.print_string [ ANSITerminal.red ] "\nQuitting";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".";
+  wait_alt 0.2;
+  ANSITerminal.print_string [ ANSITerminal.red ] ".\n";
   exit 0
 
 let parse_json file_name =
@@ -44,10 +76,12 @@ let rec inFile file_name =
   match read_line () with
   | exception End_of_file -> ()
   | "get balance" ->
+      wait 0.2;
       ANSITerminal.print_string [ ANSITerminal.blue ] "\n💵 Balance: ";
       print_string (string_of_int (Finance.Account.balance account) ^ "$\n");
       inFile file_name
   | "get owner" ->
+      wait 0.2;
       ANSITerminal.print_string [ ANSITerminal.blue ] "\n👔 Owner: ";
       print_string (Finance.Account.owner account ^ "\n");
       inFile file_name
@@ -60,8 +94,11 @@ let rec inFile file_name =
 let rec accessFile file_name =
   ANSITerminal.print_string [ ANSITerminal.blue ] "\nAccesssing account: ";
   print_string (file_name ^ "\n");
+  wait 1.0;
   ANSITerminal.print_string [ ANSITerminal.blue ] "Querying information ...\n";
+  wait 1.0;
   ANSITerminal.print_string [ ANSITerminal.blue ] "Setting up system ...\n";
+  wait 1.0;
   let file_path = direc_file_prefix ^ file_name ^ ".json" in
   if Sys.file_exists file_path then (
     ANSITerminal.print_string [ ANSITerminal.green ]
@@ -70,6 +107,7 @@ let rec accessFile file_name =
     print_string (file_name ^ " 📂\n\n");
     ANSITerminal.print_string [ ANSITerminal.green ]
       "===============================\n";
+    wait 0.5;
     inFile file_name)
   else (
     ANSITerminal.print_string [ ANSITerminal.yellow ]
@@ -84,11 +122,13 @@ let rec accessFile file_name =
     | file_name -> accessFile file_name)
 
 let rec start_query () =
+  wait 0.5;
   print_endline "Would you like to access an existing account 🧾 ? (y/n)";
   print_string "> ";
   match read_line () with
   | exception End_of_file -> ()
   | "y" -> (
+      wait 0.5;
       print_endline "\nPlease enter the account name: ";
       print_string "> ";
       match read_line () with
@@ -96,6 +136,7 @@ let rec start_query () =
       | "quit" -> quit ()
       | file_name -> accessFile file_name)
   | "n" -> (
+      wait 0.5;
       print_endline "\nWould you like to make an account 🔨 ? (y/n)";
       print_string "> ";
       match read_line () with
@@ -120,7 +161,7 @@ let main () =
     "\n\n\
      Welcome to Juice 🧃. An interactive Finance budgetting engine that \
      organizes your money 💰, provides insights on your portfolio 🔍, and allows \
-     you to plan and manage your accounts 🗂️!\n\n";
+     you to plan and manage your accounts 🗂️!\n";
   start_query ()
 
 let () = main ()

@@ -157,6 +157,10 @@ let status i =
   let acc = get_acc i in
   status_of_account acc.status
 
+let account_interest i =
+  let acc = get_acc i in
+  acc.account_interest
+
 let balance i =
   let acc = get_acc i in
   acc.balance
@@ -174,6 +178,12 @@ let stocks i =
     the user*)
   let acc = get_acc i in
   acc.stocks
+
+let properties i =
+  (*when writing interface, do not include this function, its not available to
+    the user*)
+  let acc = get_acc i in
+  acc.properties
 
 let stocks_value i =
   let rec helper lst =

@@ -106,6 +106,38 @@ let rec inFile file_name =
       print_string (Finance.Account.owner account);
       print_endline "";
       inFile file_name
+  | "get account type" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "📋 Account Type: ";
+      print_string (Finance.Account.account_type account);
+      print_endline "";
+      inFile file_name
+  | "get interest rate" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ]
+        "➖ Account Interest Rate: ";
+      print_string
+        (string_of_float
+           (float_of_int (Finance.Account.account_interest account) *. 0.1)
+        ^ "%");
+      print_endline "";
+      inFile file_name
+  | "get limit" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "🛑 Account Limit: ";
+      print_string (string_of_int (Finance.Account.limit account) ^ "$");
+      print_endline "";
+      inFile file_name
+  | "get max" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "⏸️  Account Maximum: ";
+      print_string (string_of_int (Finance.Account.maximum account) ^ "$");
+      print_endline "";
+      inFile file_name
   | "quit" -> quit_save ()
   | _ ->
       print_endline "";

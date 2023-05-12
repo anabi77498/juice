@@ -40,40 +40,55 @@ val balance : t -> int
 
 val create_account : string -> string -> int -> int -> int -> int -> int
 (** [create_account] allows the user to create an account with a respective
-    [owner acc_type balance limit maximum] and returns an id value.
-    [interest] is the interest rate multiplied by 100. So a rate of 8.32% is 832
-    [balance] is the amount of money multiplied by 100. So a balance of $1,493.33 is 149333 *)
+    [owner acc_type balance limit maximum] and returns an id value. [interest]
+    is the interest rate multiplied by 100. So a rate of 8.32% is 832 [balance]
+    is the amount of money multiplied by 100. So a balance of $1,493.33 is
+    149333 *)
 
 val account_type : int -> string
 (** [account_type id] takes in an [id] and returns an account. *)
 
 val status : int -> string
-(** [status id] takes in an [id] and returns the status of the respective account. *)
+(** [status id] takes in an [id] and returns the status of the respective
+    account. *)
+
+val account_interest : int -> int
+(** [account_interest id] takes in an [id] and returns the interest rate of the
+    respective account. *)
+
 val balance : int -> int
-(** [balance id] takes in an [id] and returns the balance of the respective account. *)
+(** [balance id] takes in an [id] and returns the balance of the respective
+    account. *)
 
 val limit : int -> int
 (** [limit id] takes in an [id] and returns the limit of the respective account. *)
 
 val maximum : int -> int
-(** [maximum id] takes in an [id] and returns the maximum of the respective account. *)
+(** [maximum id] takes in an [id] and returns the maximum of the respective
+    account. *)
 
 val stocks_value : int -> int
-(** [stocks_value id] takes in an [id] and returns the value of the stocks in the respective account. *)
+(** [stocks_value id] takes in an [id] and returns the value of the stocks in
+    the respective account. *)
 
 val withdraw : int -> int -> unit
-(** [withdraw id n] takes in an [id] and from the respective account withdraws [n]. *)
+(** [withdraw id n] takes in an [id] and from the respective account withdraws
+    [n]. *)
 
 val deposit : int -> int -> unit
-(** [withdraw id n] takes in an [id] and from the respective account deposits [n]. *)
+(** [withdraw id n] takes in an [id] and from the respective account deposits
+    [n]. *)
 
 val activate : int -> unit
-(** [activate id] takes in an [id] and sets the status of the respective account to Active. *)
+(** [activate id] takes in an [id] and sets the status of the respective account
+    to Active. *)
 
 val deactivate : int -> unit
-(** [activate id] takes in an [id] and sets the status of the respective account to Inactive. *)
+(** [activate id] takes in an [id] and sets the status of the respective account
+    to Inactive. *)
 
 val transfer : int -> int -> int -> unit
-(** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n] money between those two accounts. *)
+(** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n]
+    money between those two accounts. *)
 
 val yearly_projected_balance : int -> int

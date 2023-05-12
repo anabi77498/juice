@@ -4,8 +4,8 @@
   "account_interest" : 22,
   "status" : "Active",
   "balance" : 100,
-  "limit" : 250,
-  "maximum" : 10,
+  "limit" : 10,
+  "maximum" : 250,
   "stocks": [],
   "properties": [],
   "history": []

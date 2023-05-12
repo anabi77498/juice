@@ -243,7 +243,22 @@ let transfer id1 id2 n =
   update_all_accounts id1 new_acc1;
   update_all_accounts id2 new_acc2
 
-(*let latest_transaction id = let acc = get_acc id in List.head acc.history*)
+let string_of_transaction t =
+  "Transaction Type: " ^ t.transaction_type ^ " Amount: "
+  ^ string_of_int t.amount
+
+let latest_transaction i =
+  let acc = get_acc i in
+  List.hd acc.history
+
+let all_transactions i =
+  let acc = get_acc i in
+  let rec lst_of_tran l =
+    match l with
+    | [] -> []
+    | h :: t -> string_of_transaction h :: lst_of_tran t
+  in
+  lst_of_tran acc.history
 
 let yearly_projected_balance i =
   let acc = get_acc i in

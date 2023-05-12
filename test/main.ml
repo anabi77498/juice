@@ -27,8 +27,25 @@ let limit_test name expected acc =
 let maximum_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.maximum acc)
 
-let _ = Account.withdraw sample 5
+let withdraw_test name expected acc n =
+  name >:: fun _ -> assert_equal expected (Account.withdraw acc n)
 
+let withdraw_raise name expected acc n =
+  name >:: fun _ -> assert_raises expected (fun () -> Account.withdraw acc n)
+
+let deposit_test name expected acc n =
+  name >:: fun _ -> assert_equal expected (Account.deposit acc n)
+
+let activate_test name expected acc n =
+  name >:: fun _ -> assert_equal expected (Account.activate acc)
+
+let deactivate_test name expected acc n =
+  name >:: fun _ -> assert_equal expected (Account.deactivate acc)
+
+let transfer_test name expected acc1 acc2 n =
+  name >:: fun _ -> assert_equal expected (Account.transfer acc1 acc2 n)
+
+(*withdraw,deposit,activate,deactivate,transfer*)
 let owner_tests =
   [
     owner_test "sample owner" "Juice Washington" sample;
@@ -47,14 +64,16 @@ let owner_tests =
     balance_test "account1 balance" 6000 account1_id;
     balance_test "account2 balance" 200 account2_id;
     balance_test "account3 balance" 0 account3_id;
-    limit_test "sample limit" 250 sample;
+    limit_test "sample limit" 10 sample;
     limit_test "account1 limit" 1000 account1_id;
     limit_test "account2 limit" 0 account2_id;
     limit_test "account3 limit" 5 account3_id;
-    maximum_test "sample maximum" 10 sample;
+    maximum_test "sample maximum" 250 sample;
     maximum_test "account1 maximum" 500 account1_id;
     maximum_test "account2 maximum" 150 account2_id;
     maximum_test "account3 maximum" 0 account3_id;
+    withdraw_test "sample withdraw" () sample 10;
+    (*withdraw_raise "MaximumExceeded" (MaximumExceeded 11) sample 11;*)
   ]
 
 let tests = "test suite" >::: List.flatten [ owner_tests ]

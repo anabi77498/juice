@@ -84,6 +84,9 @@ let parse_stat_type = function
   | "Inactive" -> Inactive
   | _ -> failwith "This should never happen, given from_json's precondition"
 
+(* Asad: We may have to change how the id operates. When we access an existing
+   account (existing JSON), we need to pull the existing ID or perhaps write a
+   new function for this *)
 let from_json json =
   let open Yojson.Basic.Util in
   let new_acc =

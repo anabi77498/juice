@@ -3,9 +3,11 @@
 
 (* Utilize Lwt (open) *)
 open Yojson.Basic.Util
+open Yojson.Basic
 open Lwt
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
+let file_name_ref : string ref = ref ""
 
 let rec wait_fun start_time seconds =
   let current_time = Unix.gettimeofday () in
@@ -22,33 +24,7 @@ let wait_alt seconds =
   let start_time = Unix.gettimeofday () in
   wait_fun start_time seconds
 
-let save_to_json () =
-  ANSITerminal.print_string [ ANSITerminal.green ] "Saving......";
-  print_endline "";
-  print_endline "";
-  ANSITerminal.print_string [ ANSITerminal.yellow ]
-    "Sorry, this feature isn't available at the moment but will be soon!"
-
-let rec save () =
-  print_endline "";
-  print_endline "Would you like to save your changes? (y/n)";
-  print_string "> ";
-  match read_line () with
-  | exception End_of_file -> ()
-  | "y" ->
-      save_to_json ();
-      print_endline "" (* TODO: IMPLEMENT SAVING TO A JSON FUNCTION *)
-  | "n" -> ()
-  | _ ->
-      print_endline "";
-      ANSITerminal.print_string [ ANSITerminal.red ]
-        "⛔ Please enter a correct command ⛔";
-      print_endline "";
-      print_endline "";
-      save ()
-
-let quit_save () =
-  save ();
+let quit () =
   print_endline "";
   ANSITerminal.print_string [ ANSITerminal.red ] "Quitting";
   wait_alt 0.2;
@@ -62,7 +38,75 @@ let quit_save () =
   print_endline "";
   exit 0
 
-let quit () =
+let write_to_newfile acc_id =
+  print_endline "Please enter a name for the file: ";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | "quit" -> quit ()
+  | file_name ->
+      wait_alt 0.5;
+      let json = Finance.JsonAccount.acc_to_json acc_id in
+      let out_channel = open_out (direc_file_prefix ^ file_name ^ ".json") in
+      to_channel out_channel json;
+      close_out out_channel;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.green ]
+        ("Saved file as " ^ file_name ^ ".json")
+
+let write_to_file acc_id =
+  wait_alt 0.5;
+  let json = Finance.JsonAccount.acc_to_json acc_id in
+  to_file !file_name_ref json;
+  print_endline "";
+  ANSITerminal.print_string [ ANSITerminal.green ] "Saved file"
+
+let rec save_to_json account =
+  print_endline "";
+  print_endline "Would you like to save to a new file? (y/n)";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | "y" ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.green ] "Saving......";
+      print_endline "";
+      print_endline "";
+      write_to_newfile account
+  | "n" ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.green ] "Saving......";
+      print_endline "";
+      print_endline "";
+      write_to_file account
+  | _ ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        "⛔ Please enter a correct command ⛔";
+      print_endline "";
+      print_endline "";
+      save_to_json account
+
+let rec save account =
+  print_endline "";
+  print_endline "Would you like to save your changes? (y/n)";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | "y" ->
+      save_to_json account;
+      print_endline ""
+  | "n" -> ()
+  | _ ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        "⛔ Please enter a correct command ⛔";
+      print_endline "";
+      print_endline "";
+      save account
+
+let quit_save account =
+  save account;
   print_endline "";
   ANSITerminal.print_string [ ANSITerminal.red ] "Quitting";
   wait_alt 0.2;
@@ -124,6 +168,13 @@ let rec inFile file_name =
         ^ "%");
       print_endline "";
       inFile file_name
+  | "get account status" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "🧾 Account Status: ";
+      print_string (Finance.Account.status account);
+      print_endline "";
+      inFile file_name
   | "get limit" ->
       wait 0.2;
       print_endline "";
@@ -138,7 +189,7 @@ let rec inFile file_name =
       print_string (string_of_int (Finance.Account.maximum account) ^ "$");
       print_endline "";
       inFile file_name
-  | "quit" -> quit_save ()
+  | "quit" -> quit_save account
   | _ ->
       print_endline "";
       ANSITerminal.print_string [ ANSITerminal.red ]
@@ -173,6 +224,7 @@ let rec accessFile file_name =
       "===============================";
     print_endline "";
     wait 0.5;
+    file_name_ref := direc_file_prefix ^ file_name ^ ".json";
     inFile file_name)
   else (
     print_endline "";

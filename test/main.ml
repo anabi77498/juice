@@ -111,6 +111,11 @@ let identify_property_failure_test (name : string) (expected : exn) (i : int)
   name >:: fun _ ->
   assert_raises expected (fun () -> Account.identify_property i prop_id)
 
+let remove_property_helper_test (name : string) (expected : property list)
+    (properties : property list) (prop_id : int) (acc : property list) =
+  name >:: fun _ ->
+  assert_equal expected (Account.remove_property_helper properties prop_id acc)
+
 let property_tests =
   [
     projected_balance_test "$6000 with 5% interest" 630000
@@ -270,6 +275,106 @@ let property_tests =
       (Failure "Property does not exist")
       (create_account "Alex" "Credit" 1000 0 5 0)
       1;
+    remove_property_helper_test "remove first property in a list" []
+      [
+        {
+          id = 1;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+      ]
+      1 [];
+    remove_property_helper_test "remove the middle property in a list"
+      [
+        {
+          id = 1;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 3;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+      ]
+      [
+        {
+          id = 1;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 2;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 3;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+      ]
+      2 [];
+    remove_property_helper_test "remove none of the properties in a list"
+      [
+        {
+          id = 1;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 2;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 3;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+      ]
+      [
+        {
+          id = 1;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 2;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+        {
+          id = 3;
+          remaining_mortgage = 0;
+          mortgage_monthly_cost = 0;
+          current_rental_income = 0;
+          hoa_upkeep_and_other_expenses = 0;
+        };
+      ]
+      4 [];
   ]
 
 let tests = "test suite" >::: List.flatten [ owner_tests; property_tests ]

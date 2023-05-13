@@ -316,7 +316,7 @@ let identify_property i prop_id =
 let rec remove_property_helper (properties : property list) prop_id
     (acc : property list) =
   match properties with
-  | [] -> acc
+  | [] -> List.rev acc
   | h :: t ->
       if h.id = prop_id then remove_property_helper t prop_id acc
       else remove_property_helper t prop_id (h :: acc)
@@ -341,6 +341,26 @@ let set_rent i prop_id rent =
           mortgage_monthly_cost = prop.mortgage_monthly_cost;
           current_rental_income = rent;
           hoa_upkeep_and_other_expenses = prop.hoa_upkeep_and_other_expenses;
+        }
+        :: acc.properties;
+    }
+  in
+  update_all_accounts i new_acc
+
+let set_hoa_upkeep_and_other_expenses i prop_id hoa_etc =
+  let prop = identify_property i prop_id in
+  remove_property i prop_id;
+  let acc = get_acc i in
+  let new_acc =
+    {
+      acc with
+      properties =
+        {
+          id = prop_id;
+          remaining_mortgage = prop.remaining_mortgage;
+          mortgage_monthly_cost = prop.mortgage_monthly_cost;
+          current_rental_income = prop.current_rental_income;
+          hoa_upkeep_and_other_expenses = hoa_etc;
         }
         :: acc.properties;
     }

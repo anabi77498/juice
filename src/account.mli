@@ -108,16 +108,66 @@ val transfer : int -> int -> int -> unit
     money between those two accounts. *)
 
 val yearly_projected_balance : int -> int
+(** [yearly_projected_balance i] takes in the [i] which is the id of an account
+    returns the amount the account would have after a year solely based on
+    interest. *)
+
 val approved_mortgage : int -> int -> int -> string
+(** [approved_mortgage i prop_id mortgage_value] takes in the [i] which is the
+    id of an account, [prop_id] which is the id of the newly approved property
+    and [mortgage_value] which is the amount of the mortgage which is being
+    taken it out. After updating the account with the new property it returns a
+    string stating that the mortgage was approved. This is a helper function and
+    is only called when approved by get_mortgage (meaning there are sufficient
+    funds in account holders account for the mortgage). *)
+
 val get_mortgage : int -> int -> int -> string
+(** [get_mortgage i prop_id property_value] takes in the [i] which is the id of
+    an account, [prop_id] which is the desired id of the property (no other
+    property of the same user can have the same id), and [property_value] which
+    is the total cost of the desired property. If the mortgage can be afforded
+    then approved_mortgage will be called. Otherwise, a string stating there are
+    not enough funds will be returned. RI: The user does not have another
+    property with the same id *)
+
 val identify_property_helper : property list -> int -> property
+(** [identify_property_helper properties prop_id] takes in the [properties]
+    which is a list of all the properties owned by the user. It also takes in
+    the [prop_id] of the property. It will return the property with that prop_id
+    or it fails if the owner has no property with that id. *)
+
 val identify_property : int -> int -> property
+(** [identify_property i prop_id] takes in the [i] which is the id of the user
+    and the [prop_id] of the property and returns the user's property with that
+    id. Uses identify_property_helper. *)
 
 val remove_property_helper :
   property list -> int -> property list -> property list
+(** [remove_property_helper properties prop_id
+    property list] takes in the
+    [properties] which is the properties of an account and filters through them.
+    If they do match the prop_id the property will be removed. If not it will be
+    added to the accumulator and returned. *)
+
+val remove_property : int -> int -> unit
+(** [remove_property i prop_id] takes in the [i] which is the id of the user and
+    the [prop_id] of the property you want to remove. It will then return the
+    account with that property removed *)
 
 val latest_transaction : int -> string
 val all_transactions : int -> string list
-val remove_property : int -> int -> unit
+
 val set_rent : int -> int -> int -> unit
+(** [set_rent i prop_id rent] takes in the [i] which is the id of the user and
+    the [prop_id] of the property you want to update. It will then set the rent
+    value of that property to [rent] return the account with that property's
+    rent updated *)
+
+val set_hoa_upkeep_and_other_expenses : int -> int -> int -> unit
+(** [set_hoa_upkeep_and_other_expenses i prop_id hoa_etc] takes in the [i] which
+    is the id of the user and the [prop_id] of the property you want to update.
+    It will then set the hoa_upkeep_and_other_expenses value of that property to
+    [hoa_etc] return the account with that property's
+    hoa_upkeep_and_other_expenses updated *)
+
 val transactions_value : int -> int

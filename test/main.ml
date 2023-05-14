@@ -176,7 +176,7 @@ let property_tests =
     projected_balance_test "$200 with 0% interest" 20000
       (create_account "James" "Checking" 0 20000 0 150);
     projected_balance_test "$0 with 10% interest" 0
-      (create_account "Alex" "Credit" 1000 0 5 0);
+      (create_account "Alex" "Credit" 1000 0 0 0);
     approved_mortgage_test "Approve a mortgage #1" "Approved Mortgage"
       (create_account "Sam" "Savings" 500 10 0 500)
       1 10;
@@ -326,7 +326,7 @@ let property_tests =
       5;
     identify_property_failure_test "No home here"
       (Failure "Property does not exist")
-      (create_account "Alex" "Credit" 1000 0 5 0)
+      (create_account "Alex" "Credit" 1000 0 0 0)
       1;
     remove_property_helper_test "remove first property in a list" []
       [

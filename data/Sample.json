@@ -18,7 +18,22 @@
       "API Access": "Meta"
     }
   ],
-  "properties": [],
+  "properties": [
+    {
+      "id": 1,
+      "remaining_mortgage": 33444448,
+      "mortgage_monthly_cost": 97222,
+      "current_rental_income": 0,
+      "hoa_upkeep_and_other_expenses": 25000
+    },
+    {
+      "id": 2,
+      "remaining_mortgage": 5833340,
+      "mortgage_monthly_cost": 16666,
+      "current_rental_income": 200000,
+      "hoa_upkeep_and_other_expenses": 12000
+    }
+  ],
   "history": [
     {
       "amount": 70

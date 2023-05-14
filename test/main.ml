@@ -144,40 +144,56 @@ let owner_tests =
     transactions_value_test "transactions_value account3" 0 account3_id;
   ]
 
-let accounta_id = create_account "Sam" "Savings" 500 600000 1000 500
-
-(* owner acc_type interest balance limit maximum *)
-
+(** [projected_balance_test name expected acc] constructs an OUnit test named
+    [name] that asserts the quality of [expected] with
+    [yearly_projected_balance acc]. *)
 let projected_balance_test (name : string) (expected : int) (acc : int) =
   name >:: fun _ -> assert_equal expected (Account.yearly_projected_balance acc)
 
-(* i prop_id mortgage_value*)
+(** [approved_mortgage_test name expected i prop_id mortgage_value] constructs
+    an OUnit test named [name] that asserts the quality of [expected] with
+    [approved_mortgage i prop_id mortgage_value]. *)
 let approved_mortgage_test (name : string) (expected : string) (i : int)
     (prop_id : int) (mortgage_value : int) =
   name >:: fun _ ->
   assert_equal expected (Account.approved_mortgage i prop_id mortgage_value)
 
+(** [get_mortgage_test name expected i prop_id mortgage_value] constructs an
+    OUnit test named [name] that asserts the quality of [expected] with
+    [get_mortgage i prop_id mortgage_value]. *)
 let get_mortgage_test (name : string) (expected : string) (i : int)
     (prop_id : int) (mortgage_value : int) =
   name >:: fun _ ->
   assert_equal expected (Account.get_mortgage i prop_id mortgage_value)
 
+(** [identify_property_helper_test name expected properties prop_id] constructs
+    an OUnit test named [name] that asserts the quality of [expected] with
+    [identify_property_helper properties prop_id]. *)
 let identify_property_helper_test (name : string) (expected : property)
     (properties : property list) (prop_id : int) =
   name >:: fun _ ->
   assert_equal expected (Account.identify_property_helper properties prop_id)
 
+(** [identify_property_helper_failure_tests name expected properties prop_id]
+    constructs an OUnit test named [name] that asserts the quality of [expected]
+    with [identify_property_helper properties prop_id]. *)
 let identify_property_helper_failure_test (name : string) (expected : exn)
     (properties : property list) (prop_id : int) =
   name >:: fun _ ->
   assert_raises expected (fun () ->
       Account.identify_property_helper properties prop_id)
 
+(** [identify_property_failure_test name expected acc] constructs an OUnit test
+    named [name] that asserts the quality of [expected] with
+    [identify_property i prop_id]. *)
 let identify_property_failure_test (name : string) (expected : exn) (i : int)
     (prop_id : int) =
   name >:: fun _ ->
   assert_raises expected (fun () -> Account.identify_property i prop_id)
 
+(** [remove_property_helper_test properties prop_id acc] constructs an OUnit
+    test named [name] that asserts the quality of [expected] with
+    [remove_property_helper properties prop_id acc]. *)
 let remove_property_helper_test (name : string) (expected : property list)
     (properties : property list) (prop_id : int) (acc : property list) =
   name >:: fun _ ->

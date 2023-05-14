@@ -7,6 +7,11 @@
     For examples, the specifications in this interface reference the example
     "Sample" adventure found in [data/Sample.json]. *)
 
+exception LimitExceeded of int
+exception MaximumExceeded of int
+exception InactiveAccount
+exception InsufficientFunds
+
 type t
 (** The abstract type of values representing accounts. *)
 
@@ -25,6 +30,9 @@ type transaction
 val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
     JSON account representation. *)
+
+val get_acc: int -> t
+(* [get_acc i] retrieves the account with id [i]. *)
 
 val owner : int -> string
 (** [owner a] is the identifier of the owner in account [a]. Example: the
@@ -75,5 +83,9 @@ val deactivate : int -> unit
 
 val transfer : int -> int -> int -> unit
 (** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n] money between those two accounts. *)
+
+val latest_transaction : int -> string
+
+val all_transactions : int -> string list
 
 val yearly_projected_balance : int -> int

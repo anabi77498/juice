@@ -67,6 +67,12 @@ let latest_transaction_test name expected acc =
 let all_transactions_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.all_transactions acc)
 
+let stocks_value_test name expected acc =
+  name >:: fun _ -> assert_equal expected (Account.transactions_value acc)
+
+let transactions_value_test name expected acc =
+  name >:: fun _ -> assert_equal expected (Account.transactions_value acc)
+
 let owner_tests =
   [
     owner_test "sample owner" "Juice Washington" sample;
@@ -128,6 +134,14 @@ let owner_tests =
       account3_id 567;
     transfer_raiseI "transfer insufficient funds account3 account2" account3_id
       account2_id 21;
+    stocks_value_test "stocks_value sample" 0 sample;
+    stocks_value_test "stocks_value account1" 0 account1_id;
+    stocks_value_test "stocks_value account2" 0 account2_id;
+    stocks_value_test "stocks_value account3" 0 account3_id;
+    transactions_value_test "transactions_value sample" 0 sample;
+    transactions_value_test "transactions_value account1" 0 account1_id;
+    transactions_value_test "transactions_value account2" 0 account2_id;
+    transactions_value_test "transactions_value account3" 0 account3_id;
   ]
 
 let accounta_id = create_account "Sam" "Savings" 500 600000 1000 500

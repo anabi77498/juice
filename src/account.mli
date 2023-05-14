@@ -120,3 +120,4 @@ val latest_transaction : int -> string
 val all_transactions : int -> string list
 val remove_property : int -> int -> unit
 val set_rent : int -> int -> int -> unit
+val transactions_value : int -> int

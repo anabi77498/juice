@@ -211,6 +211,36 @@ let stocks_value i =
   in
   i |> stocks |> helper
 
+let buy_stock acc_id shares value api_key =
+  let acc = get_acc acc_id in
+  if acc.status = Active then
+    let total_value = shares * value in
+    if total_value > acc.balance then raise InsufficientFunds
+    else if acc.balance - total_value < acc.limit then
+      raise (LimitExceeded total_value)
+    else if total_value > acc.maximum then raise (MaximumExceeded total_value)
+    else
+      let new_stock =
+        { shares; cur_value_share = value; api_access = api_key }
+      in
+      let new_stocks = new_stock :: acc.stocks in
+      let new_balance = acc.balance - total_value in
+      let transactio_type = "Stock Purchase" in
+      let trans =
+        { transaction_type = transactio_type; amount = -total_value }
+      in
+      let new_history = trans :: acc.history in
+      let updated_acc =
+        {
+          acc with
+          balance = new_balance;
+          stocks = new_stocks;
+          history = new_history;
+        }
+      in
+      update_all_accounts acc_id updated_acc
+  else raise InactiveAccount
+
 let withdraw i n =
   let acc = get_acc i in
   let new_acc =
@@ -221,7 +251,8 @@ let withdraw i n =
       {
         acc with
         balance = acc.balance - n;
-        history = { transaction_type = "Withdrawal"; amount = n } :: acc.history;
+        history =
+          { transaction_type = "Withdrawal"; amount = -n } :: acc.history;
       }
     else raise (MaximumExceeded n)
   in
@@ -264,7 +295,7 @@ let transfer id1 id2 n =
         acc1 with
         balance = acc1.balance - n;
         history =
-          { transaction_type = "Transfer Send"; amount = n } :: acc1.history;
+          { transaction_type = "Transfer Send"; amount = -n } :: acc1.history;
       }
     in
     let new_acc2 =
@@ -301,7 +332,7 @@ let transactions_value i =
   let rec helper lst =
     match lst with
     | [] -> 0
-    | h :: t -> (h.amount) + helper t
+    | h :: t -> h.amount + helper t
   in
   i |> transactions |> helper
 

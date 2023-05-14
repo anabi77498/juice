@@ -27,6 +27,9 @@ zip:
 	rm -f juice.zip
 	zip -r juice.zip . -x@exclude.lst
 
+doc:
+	dune build @doc
+
 clean:
 	dune clean
 	rm -f juice.zip

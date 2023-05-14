@@ -7,6 +7,12 @@
     For examples, the specifications in this interface reference the example
     "Sample" adventure found in [data/Sample.json]. *)
 
+exception LimitExceeded of int
+exception MaximumExceeded of int
+exception InactiveAccount
+exception InsufficientFunds
+
+type t
 (** The abstract type of values representing accounts. *)
 
 type account
@@ -34,6 +40,9 @@ type t
 val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
     JSON account representation. *)
+
+val get_acc: int -> t
+(* [get_acc i] retrieves the account with id [i]. *)
 
 val owner : int -> string
 (** [owner a] is the identifier of the owner in account [a]. Example: the
@@ -108,6 +117,10 @@ val identify_property : int -> int -> property
 
 val remove_property_helper :
   property list -> int -> property list -> property list
+
+val latest_transaction : int -> string
+
+val all_transactions : int -> string list
 
 val remove_property : int -> int -> unit
 val set_rent : int -> int -> int -> unit

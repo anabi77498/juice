@@ -1,6 +1,7 @@
 exception LimitExceeded of int
 exception MaximumExceeded of int
 exception InactiveAccount
+exception InsufficientFunds
 
 type account =
   | Savings
@@ -110,6 +111,10 @@ let from_json json =
         json |> member "history" |> to_list |> List.map transaction_of_json;
     }
   in
+  assert (new_acc.balance >= new_acc.limit);
+  assert (new_acc.balance >= 0);
+  assert (new_acc.limit >= 0);
+  assert (new_acc.maximum >= 0);
   all_accounts := !all_accounts @ [ new_acc ];
   new_acc.id
 
@@ -130,6 +135,10 @@ let create_account owner acc_type interest balance limit maximum =
       history = [];
     }
   in
+  assert (new_acc.balance >= new_acc.limit);
+  assert (new_acc.balance >= 0);
+  assert (new_acc.limit >= 0);
+  assert (new_acc.maximum >= 0);
   all_accounts := !all_accounts @ [ new_acc ];
   new_acc.id
 
@@ -200,6 +209,7 @@ let withdraw i n =
   let acc = get_acc i in
   let new_acc =
     if acc.status <> Active then raise InactiveAccount
+    else if n > acc.balance then raise InsufficientFunds
     else if acc.balance - n < acc.limit then raise (LimitExceeded n)
     else if n <= acc.maximum then
       {
@@ -237,24 +247,30 @@ let deactivate i =
 let transfer id1 id2 n =
   let acc1 = get_acc id1 in
   let acc2 = get_acc id2 in
-  let new_acc1 =
-    {
-      acc1 with
-      balance = acc1.balance - n;
-      history =
-        { transaction_type = "Transfer Send"; amount = n } :: acc1.history;
-    }
-  in
-  let new_acc2 =
-    {
-      acc2 with
-      balance = acc2.balance + n;
-      history =
-        { transaction_type = "Transfer Recieve"; amount = n } :: acc2.history;
-    }
-  in
-  update_all_accounts id1 new_acc1;
-  update_all_accounts id2 new_acc2
+  if acc1.status <> Active then raise InactiveAccount
+  else if acc2.status <> Active then raise InactiveAccount
+  else if n > acc1.balance then raise InsufficientFunds
+  else if acc1.balance - n < acc1.limit then raise (LimitExceeded n)
+  else if n > acc1.maximum then raise (MaximumExceeded n)
+  else
+    let new_acc1 =
+      {
+        acc1 with
+        balance = acc1.balance - n;
+        history =
+          { transaction_type = "Transfer Send"; amount = n } :: acc1.history;
+      }
+    in
+    let new_acc2 =
+      {
+        acc2 with
+        balance = acc2.balance + n;
+        history =
+          { transaction_type = "Transfer Recieve"; amount = n } :: acc2.history;
+      }
+    in
+    update_all_accounts id1 new_acc1;
+    update_all_accounts id2 new_acc2
 
 let string_of_transaction t =
   "Transaction Type: " ^ t.transaction_type ^ " Amount: "
@@ -262,7 +278,9 @@ let string_of_transaction t =
 
 let latest_transaction i =
   let acc = get_acc i in
-  List.hd acc.history
+  match acc.history with
+  | [] -> "No transactions made"
+  | h :: t -> string_of_transaction h
 
 let all_transactions i =
   let acc = get_acc i in

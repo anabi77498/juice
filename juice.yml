@@ -11,6 +11,7 @@ group:
 pm:
   name: Robert Zhao
   netid: rz87
+publish: false
 # Project title
 title: "Juice Finance"
 # OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.

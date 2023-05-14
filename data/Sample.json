@@ -1,1 +1,30 @@
-{"owner":"Juice Washington","account_type":"Checking","account_interest":22,"status":"Active","balance":100,"limit":10,"maximum":250,"stocks":[],"properties":[],"history":[]}
+{
+  "owner": "Juice Washington",
+  "account_type": "Checking",
+  "account_interest": 22,
+  "status": "Active",
+  "balance": 100,
+  "limit": 10,
+  "maximum": 250,
+  "stocks": [
+    {
+      "Shares": 20,
+      "Current Value Share": 30,
+      "API Access": "Google"
+    },
+    {
+      "Shares": 500,
+      "Current Value Share": 25,
+      "API Access": "Meta"
+    }
+  ],
+  "properties": [],
+  "history": [
+    {
+      "amount": 70
+    },
+    {
+      "amount": -50
+    }
+  ]
+}

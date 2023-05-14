@@ -70,7 +70,7 @@ let transaction_of_json j =
   let open Yojson.Basic.Util in
   let amt = j |> member "amount" |> to_int in
   {
-    transaction_type = (if amt > 0 then "Withdrawal" else "Deposit");
+    transaction_type = (if amt < 0 then "Withdrawal" else "Deposit");
     amount = amt;
   }
 
@@ -310,7 +310,7 @@ let transfer id1 id2 n =
     update_all_accounts id2 new_acc2
 
 let string_of_transaction t =
-  "Transaction Type: " ^ t.transaction_type ^ " Amount: "
+  "Transaction Type: " ^ t.transaction_type ^ ", Amount: "
   ^ string_of_int t.amount
 
 let latest_transaction i =

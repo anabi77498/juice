@@ -85,6 +85,9 @@ let parse_stat_type = function
   | "Inactive" -> Inactive
   | _ -> failwith "This should never happen, given from_json's precondition"
 
+(* Asad: We may have to change how the id operates. When we access an existing
+   account (existing JSON), we need to pull the existing ID or perhaps write a
+   new function for this *)
 let from_json json =
   let open Yojson.Basic.Util in
   let new_acc =
@@ -166,6 +169,10 @@ let status i =
   let acc = get_acc i in
   status_of_account acc.status
 
+let account_interest i =
+  let acc = get_acc i in
+  acc.account_interest
+
 let balance i =
   let acc = get_acc i in
   acc.balance
@@ -183,6 +190,12 @@ let stocks i =
     the user*)
   let acc = get_acc i in
   acc.stocks
+
+let properties i =
+  (*when writing interface, do not include this function, its not available to
+    the user*)
+  let acc = get_acc i in
+  acc.properties
 
 let stocks_value i =
   let rec helper lst =
@@ -321,7 +334,7 @@ let identify_property i prop_id =
 let rec remove_property_helper (properties : property list) prop_id
     (acc : property list) =
   match properties with
-  | [] -> acc
+  | [] -> List.rev acc
   | h :: t ->
       if h.id = prop_id then remove_property_helper t prop_id acc
       else remove_property_helper t prop_id (h :: acc)
@@ -346,6 +359,26 @@ let set_rent i prop_id rent =
           mortgage_monthly_cost = prop.mortgage_monthly_cost;
           current_rental_income = rent;
           hoa_upkeep_and_other_expenses = prop.hoa_upkeep_and_other_expenses;
+        }
+        :: acc.properties;
+    }
+  in
+  update_all_accounts i new_acc
+
+let set_hoa_upkeep_and_other_expenses i prop_id hoa_etc =
+  let prop = identify_property i prop_id in
+  remove_property i prop_id;
+  let acc = get_acc i in
+  let new_acc =
+    {
+      acc with
+      properties =
+        {
+          id = prop_id;
+          remaining_mortgage = prop.remaining_mortgage;
+          mortgage_monthly_cost = prop.mortgage_monthly_cost;
+          current_rental_income = prop.current_rental_income;
+          hoa_upkeep_and_other_expenses = hoa_etc;
         }
         :: acc.properties;
     }

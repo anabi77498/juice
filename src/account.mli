@@ -35,13 +35,11 @@ type property = {
   hoa_upkeep_and_other_expenses : int;
 }
 
-type t
-
 val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
     JSON account representation. *)
 
-val get_acc: int -> t
+val get_acc : int -> t
 (* [get_acc i] retrieves the account with id [i]. *)
 
 val owner : int -> string
@@ -119,8 +117,6 @@ val remove_property_helper :
   property list -> int -> property list -> property list
 
 val latest_transaction : int -> string
-
 val all_transactions : int -> string list
-
 val remove_property : int -> int -> unit
 val set_rent : int -> int -> int -> unit

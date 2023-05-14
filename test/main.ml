@@ -68,10 +68,12 @@ let all_transactions_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.all_transactions acc)
 
 let stocks_value_test name expected acc =
-  name >:: fun _ -> assert_equal expected (Account.transactions_value acc)
+  name >:: fun _ ->
+  assert_equal expected (Account.stocks_value acc) ~printer:string_of_int
 
 let transactions_value_test name expected acc =
-  name >:: fun _ -> assert_equal expected (Account.transactions_value acc)
+  name >:: fun _ ->
+  assert_equal expected (Account.transactions_value acc) ~printer:string_of_int
 
 let owner_tests =
   [
@@ -106,15 +108,20 @@ let owner_tests =
     withdraw_raiseI "Insufficient Funds account1" account1_id 7000;
     withdraw_raiseI "Insufficient Funds account2" account2_id 567;
     withdraw_raiseI "Insufficient Funds account3" account3_id 21;
-    latest_transaction_test "latest_transaction sample" "No transactions made"
-      sample;
+    latest_transaction_test "latest_transaction sample"
+      "Transaction Type: Deposit, Amount: 70" sample;
     latest_transaction_test "latest_transaction account1" "No transactions made"
       account1_id;
     latest_transaction_test "latest_transaction account2" "No transactions made"
       account2_id;
     latest_transaction_test "latest_transaction account3" "No transactions made"
       account3_id;
-    all_transactions_test "all_transactions sample" [] sample;
+    all_transactions_test "all_transactions sample"
+      [
+        "Transaction Type: Deposit, Amount: 70";
+        "Transaction Type: Withdrawal, Amount: -50";
+      ]
+      sample;
     all_transactions_test "all_transactions account1" [] account1_id;
     all_transactions_test "all_transactions account2" [] account2_id;
     all_transactions_test "all_transactions account3" [] account3_id;
@@ -134,11 +141,11 @@ let owner_tests =
       account3_id 567;
     transfer_raiseI "transfer insufficient funds account3 account2" account3_id
       account2_id 21;
-    stocks_value_test "stocks_value sample" 0 sample;
+    stocks_value_test "stocks_value sample" 13100 sample;
     stocks_value_test "stocks_value account1" 0 account1_id;
     stocks_value_test "stocks_value account2" 0 account2_id;
     stocks_value_test "stocks_value account3" 0 account3_id;
-    transactions_value_test "transactions_value sample" 0 sample;
+    transactions_value_test "transactions_value sample" 20 sample;
     transactions_value_test "transactions_value account1" 0 account1_id;
     transactions_value_test "transactions_value account2" 0 account2_id;
     transactions_value_test "transactions_value account3" 0 account3_id;

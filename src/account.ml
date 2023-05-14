@@ -197,6 +197,12 @@ let properties i =
   let acc = get_acc i in
   acc.properties
 
+let transactions i =
+  (*when writing interface, do not include this function, its not available to
+    the user*)
+  let acc = get_acc i in
+  acc.history
+
 let stocks_value i =
   let rec helper lst =
     match lst with
@@ -290,6 +296,14 @@ let all_transactions i =
     | h :: t -> string_of_transaction h :: lst_of_tran t
   in
   lst_of_tran acc.history
+
+let transactions_value i =
+  let rec helper lst =
+    match lst with
+    | [] -> 0
+    | h :: t -> (h.amount) + helper t
+  in
+  i |> transactions |> helper
 
 let yearly_projected_balance i =
   let acc = get_acc i in

@@ -236,7 +236,7 @@ let rec accessFile file_name =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
-    | "quit" -> quit ()
+    | "quit" -> quit ()         
     | file_name -> accessFile file_name)
 
 let rec start_query () =

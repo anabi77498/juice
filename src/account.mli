@@ -50,11 +50,6 @@ val owner : int -> string
 val balance : t -> int
 (* [balance acc] represents the balance of an account *)
 
-(*val assets : t -> string list*)
-(** [assets a] is a set-like list of all assets names from the account [a].
-    Example: in Sample, the [assets] are ["stock 2"], ["stock 5"], and
-    ["stock 6"]. *)
-
 val create_account : string -> string -> int -> int -> int -> int -> int
 (** [create_account] allows the user to create an account with a respective
     [owner acc_type balance limit maximum] and returns an id value. [interest]
@@ -188,5 +183,13 @@ val transactions_value : int -> int
     transactions in the respective account's history. *)
 
 val stock_to_json : int -> Yojson.Basic.t
+(** [stock_to_json j] takes in an [id] and returns a valid JSON stock
+    representation. *)
+
 val prop_to_json : int -> Yojson.Basic.t
+(** [prop_to_json j] takes in an [id] and returns a valid JSON property
+    representation. *)
+
 val history_to_json : int -> Yojson.Basic.t
+(** [history_to_json j] takes in an [id] and returns a valid JSON history
+    representation. *)

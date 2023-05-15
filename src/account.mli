@@ -145,6 +145,9 @@ val identify_property : int -> int -> property
     and the [prop_id] of the property and returns the user's property with that
     id. Uses identify_property_helper. *)
 
+val get_property_info : int -> int -> string list
+(* UNTESTED *)
+
 val remove_property_helper :
   property list -> int -> property list -> property list
 (** [remove_property_helper properties prop_id
@@ -175,3 +178,6 @@ val set_hoa_upkeep_and_other_expenses : int -> int -> int -> unit
     hoa_upkeep_and_other_expenses updated *)
 
 val transactions_value : int -> int
+val stock_to_json : int -> Yojson.Basic.t
+val prop_to_json : int -> Yojson.Basic.t
+val history_to_json : int -> Yojson.Basic.t

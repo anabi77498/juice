@@ -8,7 +8,7 @@ open Lwt
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
 let file_name_ref : string ref = ref ""
-let curr_state : Finance.State.t_state option ref = ref None
+(* let curr_state : Finance.State.t_state option ref = ref None *)
 
 let rec wait_fun start_time seconds =
   let current_time = Unix.gettimeofday () in
@@ -124,27 +124,15 @@ let quit_save account =
 let parse_json file_name =
   Yojson.Basic.from_file (direc_file_prefix ^ file_name ^ ".json")
 
-let load_state account =
-  curr_state :=
-    Some
-      {
-        id = account;
-        owner = Finance.Account.owner account;
-        account_type = Finance.Account.account_type account;
-        account_interest = Finance.Account.account_interest account;
-        status = Finance.Account.status account;
-        balance = Finance.Account.balance account;
-        limit = Finance.Account.limit account;
-        maximum = Finance.Account.maximum account;
-        stocks = [];
-        properties = [];
-        history = [];
-      }
+(* let load_state account = curr_state := Some { id = account; owner =
+   Finance.Account.owner account; account_type = Finance.Account.account_type
+   account; account_interest = Finance.Account.account_interest account; status
+   = Finance.Account.status account; balance = Finance.Account.balance account;
+   limit = Finance.Account.limit account; maximum = Finance.Account.maximum
+   account; stocks = []; properties = []; history = []; } *)
 
-let get_state () =
-  match !curr_state with
-  | Some x -> x
-  | _ -> failwith "no active state"
+(* let get_state () = match !curr_state with | Some x -> x | _ -> failwith "no
+   active state" *)
 
 let create_account () =
   print_endline "";
@@ -153,9 +141,7 @@ let create_account () =
   quit ()
 
 let rec inFile account =
-  (match !curr_state with
-  | None -> load_state account
-  | Some _ -> ());
+  (* (match !curr_state with | None -> load_state account | Some _ -> ()); *)
   print_endline "";
   print_endline "What would you like to do?";
   print_string "> ";
@@ -230,6 +216,57 @@ let rec inFile account =
       wait 0.2;
       print_endline "";
       deactivate_acct account
+  | "get stocks value" ->
+      wait 0.2;
+      print_endline "";
+      get_stock_value account
+  | "start transfer" ->
+      wait 0.2;
+      print_endline "";
+      transfer account
+  | "get projected balance" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ]
+        "🏦 Projected Account Balance: ";
+      print_string
+        (string_of_int (Finance.Account.yearly_projected_balance account) ^ "$");
+      print_endline "";
+      print_endline
+        "^Projected amount after one year based on your current interest rate \
+         and account finances";
+      print_endline "";
+      inFile account
+  | "mortgage check" ->
+      wait 0.2;
+      print_endline "";
+      get_mortgage account
+  | "get properties" ->
+      wait 0.2;
+      print_endline "";
+      get_property_info account
+  | "remove properties" ->
+      wait 0.2;
+      print_endline "";
+      remove_property account
+  | "get last transaction" ->
+      wait 0.2;
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "🏦 Latest Transaction: ";
+      print_string (Finance.Account.latest_transaction account ^ "$");
+      inFile account
+  | "get transactions" ->
+      wait 0.2;
+      print_endline "";
+      get_transactions account
+  | "set property rent" ->
+      wait 0.2;
+      print_endline "";
+      set_rent account
+  | "set property expenses" ->
+      wait 0.2;
+      print_endline "";
+      set_prop_expenses account
   | "quit" -> quit_save account
   | _ ->
       print_endline "";
@@ -324,7 +361,7 @@ and deposit account =
           ANSITerminal.print_string [ ANSITerminal.red ]
             " ⛔ Please enter an integer value ⛔ ";
           print_endline "";
-          withdraw account)
+          deposit account)
   end
 
 and activate_acct account =
@@ -357,6 +394,363 @@ and deactivate_acct account =
     print_endline "";
     inFile account)
 
+and get_stock_value account =
+  ANSITerminal.print_string [ ANSITerminal.blue ] "Crunching numbers ...";
+  print_endline "";
+  print_endline "";
+  let amount = string_of_int (Finance.Account.stocks_value account) in
+  ANSITerminal.print_string [ ANSITerminal.blue ] "📈 Total Stock value: ";
+  print_endline (amount ^ "$");
+  inFile account
+
+and transfer account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Who would you like to transfer to? Please input their account ID";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | id2 -> begin
+        try
+          let id2_int = int_of_string id2 in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "How much would you like to send?";
+          print_endline "";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | "quit" -> quit_save account
+          | amount -> begin
+              try
+                let int_amt = int_of_string amount in
+                let balance = Finance.Account.balance account in
+                if Finance.Account.maximum account < int_amt then (
+                  print_endline "";
+                  ANSITerminal.print_string [ ANSITerminal.red ]
+                    " ⛔ This amount is greater than your account maximum! ⛔ ";
+                  print_endline "";
+                  transfer account)
+                else if Finance.Account.limit account > balance - int_amt then (
+                  print_endline "";
+                  ANSITerminal.print_string [ ANSITerminal.red ]
+                    " ⛔ This transfer will put your account over the limit! ⛔ ";
+                  print_endline "";
+                  transfer account)
+                else if balance < int_amt then (
+                  print_endline "";
+                  ANSITerminal.print_string [ ANSITerminal.red ]
+                    " ⛔ Insufficient funds! The transfer amount is too great ⛔ ";
+                  print_endline "";
+                  transfer account)
+                else if Finance.Account.is_active id2_int = false then (
+                  print_endline "";
+                  ANSITerminal.print_string [ ANSITerminal.red ]
+                    " ⛔ This account is not actively receiving transfers ⛔ ";
+                  print_endline "";
+                  inFile account)
+                else (
+                  print_endline "";
+                  ANSITerminal.print_string [ ANSITerminal.blue ]
+                    "Transferring ...";
+                  wait 0.2;
+                  print_endline "";
+                  Finance.Account.transfer account id2_int int_amt;
+                  ANSITerminal.print_string [ ANSITerminal.green ]
+                    "💰 Transferred ";
+                  print_string (amount ^ "$");
+                  ANSITerminal.print_string [ ANSITerminal.green ]
+                    " to account ID: ";
+                  print_string id2;
+                  print_endline "";
+                  inFile account)
+              with Failure _ ->
+                print_endline "";
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  " ⛔ Please enter an integer value ⛔ ";
+                print_endline "";
+                transfer account
+            end
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Please enter an integer ID value ⛔ ";
+          print_endline "";
+          transfer account
+      end
+  end
+
+and get_mortgage account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Choose a property ID from the listed properties in your account";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | str_id -> (
+        try
+          let prop_id = int_of_string str_id in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "What is the mortgage amount?";
+          print_endline "";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | "quit" -> quit_save account
+          | amount_str -> (
+              try
+                let amount = int_of_string amount_str in
+                print_endline "";
+                (match Finance.Account.get_mortgage account prop_id amount with
+                | "Not Enough Funds for Said Property" ->
+                    ANSITerminal.print_string [ ANSITerminal.yellow ]
+                      ("Not Approved! not enough funds for property ID "
+                     ^ str_id)
+                | "Approved Mortgage" ->
+                    ANSITerminal.print_string [ ANSITerminal.green ]
+                      ("Approved! Based on your funds, a mortgage would be \
+                        valid on Property ID " ^ str_id)
+                | _ ->
+                    print_endline
+                      "Error in generating your request. Please try again later");
+                print_endline "";
+                inFile account
+              with Failure _ ->
+                print_endline "";
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  " ⛔ Please enter an integer ID value ⛔ ";
+                print_endline "";
+                get_mortgage account)
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Please enter an integer ID value ⛔ ";
+          print_endline "";
+          get_mortgage account)
+  end
+
+and get_property_info account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Choose a property ID from the listed properties in your account";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | str_id -> (
+        try
+          let prop_id = int_of_string str_id in
+          let info_list = Finance.Account.get_property_info account prop_id in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ] "Property ID: ";
+          print_string (List.nth info_list 0);
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ] "Remaining Mortgage: ";
+          print_string (List.nth info_list 1 ^ "$");
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "Mortgage Monthly Cost: ";
+          print_string (List.nth info_list 2 ^ "$");
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "Current Rental Income: ";
+          print_string (List.nth info_list 3 ^ "$");
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "Current Property Expenses: ";
+          print_string (List.nth info_list 4 ^ "$");
+          print_endline "";
+          print_endline "";
+          inFile account
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Please enter an integer Property ID value that is in your \
+             account ⛔ ";
+          print_endline "";
+          get_property_info account)
+  end
+
+and remove_property account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Choose a property ID from the listed properties in your account";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | str_id -> (
+        try
+          let prop_id = int_of_string str_id in
+          Finance.Account.remove_property account prop_id;
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.yellow ]
+            ("Removed property " ^ str_id);
+          print_endline "";
+          inFile account
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Please enter an integer ID value ⛔ ";
+          print_endline "";
+          remove_property account)
+  end
+
+and set_rent account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Choose a property ID from the listed properties in your account";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | str_id -> (
+        try
+          let prop_id = int_of_string str_id in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "What is the rent amount?";
+          print_endline "";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | "quit" -> quit_save account
+          | amount_str -> (
+              try
+                let amount = int_of_string amount_str in
+                print_endline "";
+                Finance.Account.set_rent account prop_id amount;
+                ANSITerminal.print_string [ ANSITerminal.green ]
+                  "The rent for property ID ";
+                print_string str_id;
+                ANSITerminal.print_string [ ANSITerminal.green ]
+                  " has been set to ";
+                print_string (amount_str ^ "$");
+                print_endline "";
+                inFile account
+              with Failure _ ->
+                print_endline "";
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  " ⛔ Error - Please enter an integer Property ID value that \
+                   is in your account ⛔ ";
+                print_endline "";
+                set_rent account)
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Error - Please enter an integer Property ID value that is in \
+             your account ⛔ ";
+          print_endline "";
+          set_rent account)
+  end
+
+and set_prop_expenses account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for transfers ⛔ ";
+    print_endline "";
+    inFile account)
+  else begin
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "Choose a property ID from the listed properties in your account";
+    print_endline "";
+    print_string "> ";
+    match read_line () with
+    | exception End_of_file -> ()
+    | "quit" -> quit_save account
+    | str_id -> (
+        try
+          let prop_id = int_of_string str_id in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "What is the expenses amount?";
+          print_endline "";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | "quit" -> quit_save account
+          | amount_str -> (
+              try
+                let amount = int_of_string amount_str in
+                print_endline "";
+                Finance.Account.set_hoa_upkeep_and_other_expenses account
+                  prop_id amount;
+                ANSITerminal.print_string [ ANSITerminal.green ]
+                  "The expenses for property ID ";
+                print_string str_id;
+                ANSITerminal.print_string [ ANSITerminal.green ]
+                  " has been set to ";
+                print_string (amount_str ^ "$");
+                print_endline "";
+                inFile account
+              with Failure _ ->
+                print_endline "";
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  " ⛔ Error - Please enter an integer Property ID value that \
+                   is in your account ⛔ ";
+                print_endline "";
+                set_prop_expenses account)
+        with Failure _ ->
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.red ]
+            " ⛔ Error - Please enter an integer Property ID value that is in \
+             your account ⛔ ";
+          print_endline "";
+          set_prop_expenses account)
+  end
+
+and get_transactions account =
+  print_endline "";
+  let history = Finance.Account.all_transactions account in
+  let rec print_transactions lst =
+    match lst with
+    | [] -> print_endline ""
+    | h :: t ->
+        print_endline (h ^ "$" ^ "   ");
+        print_transactions t
+  in
+  print_transactions history;
+  inFile account
+
 let rec accessFile file_name =
   print_endline "";
   ANSITerminal.print_string [ ANSITerminal.blue ] "Accesssing account: ";
@@ -384,8 +778,16 @@ let rec accessFile file_name =
     print_endline "";
     wait 0.5;
     file_name_ref := direc_file_prefix ^ file_name ^ ".json";
-    let account = Finance.Account.from_json (file_name |> parse_json) in
-    inFile account)
+    try
+      let account = Finance.Account.from_json (file_name |> parse_json) in
+      inFile account
+    with Type_error _ ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        " ⛔ This Account Sheet is malformed! Please adhere to the Account \
+         Sheet format  ⛔ ";
+      print_endline "";
+      start_query ())
   else (
     print_endline "";
     ANSITerminal.print_string [ ANSITerminal.yellow ]
@@ -399,7 +801,7 @@ let rec accessFile file_name =
     | "quit" -> quit ()
     | file_name -> accessFile file_name)
 
-let rec start_query () =
+and start_query () =
   wait 0.3;
   print_endline "Would you like to access an existing account 🧾 ? (y/n)";
   print_string "> ";

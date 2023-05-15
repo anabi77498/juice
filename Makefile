@@ -24,8 +24,8 @@ juice:
 	OCAMLRUNPARAM=b dune exec bin/main.exe
 
 zip:
-	rm -f juice.zip
-	zip -r juice.zip . -x@exclude.lst
+	rm -f adventure.zip
+	zip -r adventure.zip . -x@exclude.lst
 
 doc:
 	dune build @doc

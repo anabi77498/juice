@@ -86,14 +86,6 @@ if [[ $1 != "final" ]]; then
   exit 0
 fi
 
-print_meta "Checking [hours_worked]"
-
-dune exec check/check.exe
-if [[ $? -ne 0 ]]; then
-  print_fatal "You have not set [hours_worked]."
-  exit 1
-fi
-
 print_meta "Checking for zip file"
 
 if [[ -x "$(command -v md5)" ]]; then

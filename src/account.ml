@@ -479,9 +479,3 @@ let prop_to_json (acc_id : int) : Yojson.Basic.t =
 let history_to_json (acc_id : int) : Yojson.Basic.t =
   let hist_lst = transactions acc_id in
   `List (List.map (fun x -> `Assoc [ ("amount", `Int x.amount) ]) hist_lst)
-
-(* "id": 1, "Remaining Mortgage": 33444448, "Mortgage Monthly Cost": 97222,
-   "Current Rental Income": 0, "Hoa, Upkeep, and other Expenses": 25000 *)
-
-(* type property = { id : int; remaining_mortgage : int; mortgage_monthly_cost :
-   int; current_rental_income : int; hoa_upkeep_and_other_expenses : int; } *)

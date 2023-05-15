@@ -1,6 +1,3 @@
-(* TODO: - make keywords to access functions (quit, access) - Access a JSON
-   file/ create a JSON file *)
-
 (* Utilize Lwt (open) *)
 open Yojson.Basic.Util
 open Yojson.Basic
@@ -8,7 +5,28 @@ open Lwt
 
 let direc_file_prefix = "data" ^ Filename.dir_sep
 let file_name_ref : string ref = ref ""
-(* let curr_state : Finance.State.t_state option ref = ref None *)
+
+let help_str =
+  "\"get balance\" \n\
+   \"get owner\" \n\
+   \"get account type\" \n\
+   \"get interest rate\" \n\
+   \"get account status\" \n\
+   \"get limit\" \"get max\" \n\
+   \"withdraw\" \n\
+   \"deposit\" \n\
+   \"get stocks value\" \n\
+   \"start transfer\" \n\
+   \"get projected balance\" \n\
+   \"mortgage check\" \n\
+   \"get properties\" \n\
+   \"remove properties\" \n\
+   \"get last transaction\" \n\
+   \"get transactions\" \n\
+   \"set property rent\" \n\
+   \"set property expenses\" \n\
+   \"quit\" \n\
+   \"return\""
 
 let rec wait_fun start_time seconds =
   let current_time = Unix.gettimeofday () in
@@ -124,29 +142,19 @@ let quit_save account =
 let parse_json file_name =
   Yojson.Basic.from_file (direc_file_prefix ^ file_name ^ ".json")
 
-(* let load_state account = curr_state := Some { id = account; owner =
-   Finance.Account.owner account; account_type = Finance.Account.account_type
-   account; account_interest = Finance.Account.account_interest account; status
-   = Finance.Account.status account; balance = Finance.Account.balance account;
-   limit = Finance.Account.limit account; maximum = Finance.Account.maximum
-   account; stocks = []; properties = []; history = []; } *)
-
-(* let get_state () = match !curr_state with | Some x -> x | _ -> failwith "no
-   active state" *)
-
-let create_account () =
-  print_endline "";
-  ANSITerminal.print_string [ ANSITerminal.yellow ]
-    "Sorry, this feature isn't available at the moment but will be soon!";
-  quit ()
-
 let rec inFile account =
-  (* (match !curr_state with | None -> load_state account | Some _ -> ()); *)
   print_endline "";
   print_endline "What would you like to do?";
   print_string "> ";
   match read_line () with
   | exception End_of_file -> ()
+  | "return" -> inFile account
+  | "help" ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ] "💭 Commands List: ";
+      print_endline "";
+      print_endline help_str;
+      inFile account
   | "get balance" ->
       wait 0.2;
       print_endline "";
@@ -254,6 +262,7 @@ let rec inFile account =
       print_endline "";
       ANSITerminal.print_string [ ANSITerminal.blue ] "🏦 Latest Transaction: ";
       print_string (Finance.Account.latest_transaction account ^ "$");
+      print_endline "";
       inFile account
   | "get transactions" ->
       wait 0.2;
@@ -290,6 +299,7 @@ and withdraw account =
     match read_line () with
     | exception End_of_file -> ()
     | "quit" -> quit_save account
+    | "return" -> inFile account
     | amount -> (
         try
           let int_amt = int_of_string amount in
@@ -343,6 +353,7 @@ and deposit account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | amount -> (
         try
@@ -417,6 +428,7 @@ and transfer account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | id2 -> begin
         try
@@ -428,6 +440,7 @@ and transfer account =
           print_string "> ";
           match read_line () with
           | exception End_of_file -> ()
+          | "return" -> inFile account
           | "quit" -> quit_save account
           | amount -> begin
               try
@@ -475,7 +488,8 @@ and transfer account =
               with Failure _ ->
                 print_endline "";
                 ANSITerminal.print_string [ ANSITerminal.red ]
-                  " ⛔ Please enter an integer value ⛔ ";
+                  " ⛔ Please enter an integer value and make sure the account \
+                   exists! ⛔ ";
                 print_endline "";
                 transfer account
             end
@@ -503,6 +517,7 @@ and get_mortgage account =
     match read_line () with
     | exception End_of_file -> ()
     | "quit" -> quit_save account
+    | "return" -> inFile account
     | str_id -> (
         try
           let prop_id = int_of_string str_id in
@@ -513,6 +528,7 @@ and get_mortgage account =
           print_string "> ";
           match read_line () with
           | exception End_of_file -> ()
+          | "return" -> inFile account
           | "quit" -> quit_save account
           | amount_str -> (
               try
@@ -560,6 +576,7 @@ and get_property_info account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | str_id -> (
         try
@@ -609,6 +626,7 @@ and remove_property account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | str_id -> (
         try
@@ -641,6 +659,7 @@ and set_rent account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | str_id -> (
         try
@@ -652,6 +671,7 @@ and set_rent account =
           print_string "> ";
           match read_line () with
           | exception End_of_file -> ()
+          | "return" -> inFile account
           | "quit" -> quit_save account
           | amount_str -> (
               try
@@ -696,6 +716,7 @@ and set_prop_expenses account =
     print_string "> ";
     match read_line () with
     | exception End_of_file -> ()
+    | "return" -> inFile account
     | "quit" -> quit_save account
     | str_id -> (
         try
@@ -707,6 +728,7 @@ and set_prop_expenses account =
           print_string "> ";
           match read_line () with
           | exception End_of_file -> ()
+          | "return" -> inFile account
           | "quit" -> quit_save account
           | amount_str -> (
               try
@@ -800,6 +822,106 @@ let rec accessFile file_name =
     | exception End_of_file -> ()
     | "quit" -> quit ()
     | file_name -> accessFile file_name)
+
+and create_account () =
+  print_endline "";
+  print_endline "";
+  print_endline "Please enter the account owner";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | owner -> (
+      print_endline "";
+      print_endline
+        "Please enter the account type [ Savings ; Checking ; Credit ]";
+      print_string "> ";
+      match read_line () with
+      | exception End_of_file -> ()
+      | account_type -> (
+          print_endline "";
+          print_endline "Please enter an account interest rate (0 if none)";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | acc_interest_str -> (
+              try
+                let acc_interest =
+                  int_of_float (float_of_string acc_interest_str *. 10.0)
+                in
+                print_endline "";
+                print_endline "Please enter an account balance (0 if none)";
+                print_string "> ";
+                match read_line () with
+                | exception End_of_file -> ()
+                | acc_balance_str -> (
+                    try
+                      let acc_balance = int_of_string acc_balance_str in
+                      print_endline "";
+                      print_endline "Please enter an account limit (0 if none)";
+                      print_string "> ";
+                      match read_line () with
+                      | exception End_of_file -> ()
+                      | acc_limit_str -> (
+                          try
+                            let acc_limit = int_of_string acc_limit_str in
+                            print_endline "";
+                            print_endline
+                              "Please enter an account maximum (0 if none)";
+                            print_string "> ";
+                            match read_line () with
+                            | exception End_of_file -> ()
+                            | acc_max_str -> (
+                                try
+                                  let acc_max = int_of_string acc_max_str in
+                                  print_endline "";
+                                  ANSITerminal.print_string
+                                    [ ANSITerminal.blue ] "Creating account ...";
+                                  print_endline "";
+                                  wait 1.0;
+                                  ANSITerminal.print_string
+                                    [ ANSITerminal.blue ]
+                                    "Querying information ...";
+                                  print_endline "";
+                                  wait 1.0;
+                                  ANSITerminal.print_string
+                                    [ ANSITerminal.blue ]
+                                    "Setting up system ...";
+                                  print_endline "";
+                                  wait 1.0;
+                                  let new_account =
+                                    Finance.Account.create_account owner
+                                      account_type acc_interest acc_balance
+                                      acc_limit acc_max
+                                  in
+                                  ANSITerminal.print_string
+                                    [ ANSITerminal.green ]
+                                    "Successfully created account! Welcome ";
+                                  print_endline owner;
+                                  inFile new_account
+                                with Failure _ ->
+                                  print_endline "";
+                                  ANSITerminal.print_string [ ANSITerminal.red ]
+                                    " ⛔ Please enter an integer value ⛔ ";
+                                  print_endline "";
+                                  create_account ())
+                          with Failure _ ->
+                            print_endline "";
+                            ANSITerminal.print_string [ ANSITerminal.red ]
+                              " ⛔ Please enter an integer value ⛔ ";
+                            print_endline "";
+                            create_account ())
+                    with Failure _ ->
+                      print_endline "";
+                      ANSITerminal.print_string [ ANSITerminal.red ]
+                        " ⛔ Please enter an integer value ⛔ ";
+                      print_endline "";
+                      create_account ())
+              with Failure _ ->
+                print_endline "";
+                ANSITerminal.print_string [ ANSITerminal.red ]
+                  " ⛔ Please enter an integer value ⛔ ";
+                print_endline "";
+                create_account ())))
 
 and start_query () =
   wait 0.3;

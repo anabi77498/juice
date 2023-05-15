@@ -7,3 +7,5 @@
     "Sample" adventure found in [data/Sample.json]. *)
 
 val acc_to_json : int -> Yojson.Basic.t
+(** [acc_to_json j] takes in an [id] and returns a valid JSON account
+    representation. *)

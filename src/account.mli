@@ -9,10 +9,13 @@
 
 exception LimitExceeded of int
 (** Raised when account limit is exceeded. *)
+
 exception MaximumExceeded of int
 (** Raised when account maximum is exceeded. *)
+
 exception InactiveAccount
 (** Raised when inactive account is operated upon. *)
+
 exception InsufficientFunds
 (** Raised when account balance is exceeded. *)
 
@@ -106,6 +109,11 @@ val is_active : int -> bool
 val deactivate : int -> unit
 (** [activate id] takes in an [id] and sets the status of the respective account
     to Inactive. *)
+
+val buy_stock : int -> int -> int -> string -> unit
+(** [buy_stock acc_id shares value api_key] takes in an [acc_id] and adds a
+    stock with [shares] shares, each with a value [value], and name [api_key] to
+    the stocks list of the respective account to Inactive. *)
 
 val transfer : int -> int -> int -> unit
 (** [transfer id1 id2 n] takes in the [id] of two accounts and transfers [n]

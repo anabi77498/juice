@@ -1,6 +1,39 @@
 open Finance
 open Account
 open OUnit2
+(**The following is our test plan for the Account module of the Finance library.
+   The Account module is responsible for the creation and management of accounts
+   in a banking system. The tests are developed using the OUnit testing
+   framework, which is an automatic testing framework. The Account module will
+   be also be tested manually, within the interface we created. The OUnit tests
+   check for exceptions as well as ensure that account creation is executed
+   properly. For any mutations to accounts, we needed to test manually through
+   the interface, as OUnit runs tests concurrently, rather than sequentially. To
+   verify mutable changes to accounts, we used query functions to confirm
+   updates. We used a combination of black box testing and glass box testing.
+   Black box testing was used to test the functions using their documentation
+   specifications. We verified each function functioned as the specification
+   ensured it would. Glass box testing was also used to test the functions of
+   the module, as we  ensured that nearly all parts of the code paths within
+   each function was explored. More specifically, we ensured that different
+   branches, conditions, and loops within each function were tested. This
+   allowed us to verify the correctness of the internal logic and handling of
+   different scenarios within the module. By examining the code paths and
+   executing tests that cover different branches, we can identify any potential
+   bugs or unexpected behaviors in the implementation. This comprehensive
+   testing approach provides a high level of confidence in the functionality and
+   reliability of the Account module. Test cases are developed to verify that
+   the functions of the module are producing expected outputs. The testing
+   approach demonstrates the correctness of the system because the tests are
+   designed to cover all possible inputs and edge cases. We tested the module
+   with several different inputs. We also checked edge cases, such as when the
+   account fields, such as balance and limit, are zero. Thus, we verified that
+   it is producing the expected outputs. Furthermore, the testing approach
+   ensures that the module is working as intended and is free from any bugs, as
+   we also confirmed that functions raised exceptions when expected. This gives
+   us confidence that the Account module will function as expected in the
+   overall Finance library.  *)
+
 
 let data_dir_prefix = "data" ^ Filename.dir_sep
 let sample_yo = Yojson.Basic.from_file (data_dir_prefix ^ "Sample.json")

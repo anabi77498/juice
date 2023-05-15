@@ -888,38 +888,50 @@ and create_account () =
                                     "Setting up system ...";
                                   print_endline "";
                                   wait 1.0;
-                                  let new_account =
-                                    Finance.Account.create_account owner
-                                      account_type acc_interest acc_balance
-                                      acc_limit acc_max
-                                  in
-                                  ANSITerminal.print_string
-                                    [ ANSITerminal.green ]
-                                    "Successfully created account! Welcome ";
-                                  print_endline owner;
-                                  inFile new_account
+                                  if
+                                    acc_limit >= 0 && acc_balance >= 0
+                                    && acc_max >= 0 && acc_balance > acc_limit
+                                  then (
+                                    let new_account =
+                                      Finance.Account.create_account owner
+                                        account_type acc_interest acc_balance
+                                        acc_limit acc_max
+                                    in
+                                    ANSITerminal.print_string
+                                      [ ANSITerminal.green ]
+                                      "Successfully created account! Welcome ";
+                                    print_endline owner;
+                                    inFile new_account)
+                                  else
+                                    ANSITerminal.print_string
+                                      [ ANSITerminal.yellow ]
+                                      "Account cannot be created! Ensure the \
+                                       following: \n\
+                                       limit, balance, max >= 0 and balance > \
+                                       limit";
+                                  create_account ()
                                 with Failure _ ->
                                   print_endline "";
                                   ANSITerminal.print_string [ ANSITerminal.red ]
-                                    " ⛔ Please enter an integer value ⛔ ";
-                                  print_endline "";
+                                    " ⛔ Please enter the proper value for \
+                                     account type ⛔ ";
                                   create_account ())
                           with Failure _ ->
                             print_endline "";
                             ANSITerminal.print_string [ ANSITerminal.red ]
-                              " ⛔ Please enter an integer value ⛔ ";
+                              " ⛔ Please enter the proper value ⛔ ";
                             print_endline "";
                             create_account ())
                     with Failure _ ->
                       print_endline "";
                       ANSITerminal.print_string [ ANSITerminal.red ]
-                        " ⛔ Please enter an integer value ⛔ ";
+                        " ⛔ Please enter the proper value ⛔ ";
                       print_endline "";
                       create_account ())
               with Failure _ ->
                 print_endline "";
                 ANSITerminal.print_string [ ANSITerminal.red ]
-                  " ⛔ Please enter an integer value ⛔ ";
+                  " ⛔ Please enter the proper value ⛔ ";
                 print_endline "";
                 create_account ())))
 

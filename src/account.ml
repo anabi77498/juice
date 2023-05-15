@@ -85,9 +85,6 @@ let parse_stat_type = function
   | "Inactive" -> Inactive
   | _ -> failwith "This should never happen, given from_json's precondition"
 
-(* Asad: We may have to change how the id operates. When we access an existing
-   account (existing JSON), we need to pull the existing ID or perhaps write a
-   new function for this *)
 let from_json json =
   let open Yojson.Basic.Util in
   let new_acc =
@@ -380,6 +377,21 @@ let identify_property i prop_id =
   let acc = get_acc i in
   identify_property_helper acc.properties prop_id
 
+let rec identify_property_helper (properties : property list) prop_id =
+  match properties with
+  | [] -> failwith "Property does not exist"
+  | h :: t -> if h.id = prop_id then h else identify_property_helper t prop_id
+
+let get_property_info i prop_id =
+  let prop = identify_property i prop_id in
+  [
+    string_of_int prop_id;
+    string_of_int prop.remaining_mortgage;
+    string_of_int prop.mortgage_monthly_cost;
+    string_of_int prop.current_rental_income;
+    string_of_int prop.hoa_upkeep_and_other_expenses;
+  ]
+
 let rec remove_property_helper (properties : property list) prop_id
     (acc : property list) =
   match properties with
@@ -433,3 +445,43 @@ let set_hoa_upkeep_and_other_expenses i prop_id hoa_etc =
     }
   in
   update_all_accounts i new_acc
+
+let stock_to_json (acc_id : int) : Yojson.Basic.t =
+  let stock_lst = stocks acc_id in
+  `List
+    (List.map
+       (fun x ->
+         `Assoc
+           [
+             ("Shares", `Int x.shares);
+             ("Current Value Share", `Int x.cur_value_share);
+             ("API Access", `String x.api_access);
+           ])
+       stock_lst)
+
+let prop_to_json (acc_id : int) : Yojson.Basic.t =
+  let prop_lst = properties acc_id in
+  `List
+    (List.map
+       (fun x ->
+         let prop : property = x in
+         `Assoc
+           [
+             ("id", `Int x.id);
+             ("Remaining Mortgage", `Int prop.remaining_mortgage);
+             ("Mortgage Monthly Cost", `Int prop.mortgage_monthly_cost);
+             ("Current Rental Income", `Int prop.current_rental_income);
+             ( "Hoa, Upkeep, and other Expenses",
+               `Int prop.hoa_upkeep_and_other_expenses );
+           ])
+       prop_lst)
+
+let history_to_json (acc_id : int) : Yojson.Basic.t =
+  let hist_lst = transactions acc_id in
+  `List (List.map (fun x -> `Assoc [ ("amount", `Int x.amount) ]) hist_lst)
+
+(* "id": 1, "Remaining Mortgage": 33444448, "Mortgage Monthly Cost": 97222,
+   "Current Rental Income": 0, "Hoa, Upkeep, and other Expenses": 25000 *)
+
+(* type property = { id : int; remaining_mortgage : int; mortgage_monthly_cost :
+   int; current_rental_income : int; hoa_upkeep_and_other_expenses : int; } *)

@@ -3,11 +3,13 @@ type stock_state = {
   cur_value_share : int;
   api_access : string;
 }
+(** The type of values representing the state of a stock. *)
 
 type transaction_state = {
   transaction_type : string;
   amount : int;
 }
+(** The type of values representing the state of a transaction. *)
 
 type property_state = {
   id : int;
@@ -16,6 +18,7 @@ type property_state = {
   current_rental_income : int;
   hoa_upkeep_and_other_expenses : int;
 }
+(** The type of values representing the state of a property. *)
 
 type t_state = {
   id : int;
@@ -30,3 +33,4 @@ type t_state = {
   properties : property_state list;
   history : transaction_state list;
 }
+(** The type of values representing the state of an account. *)

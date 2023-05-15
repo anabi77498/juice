@@ -34,6 +34,7 @@ type property = {
   current_rental_income : int;
   hoa_upkeep_and_other_expenses : int;
 }
+(** The type used to represent the properties of account. *)
 
 val from_json : Yojson.Basic.t -> int
 (** [from_json j] is the account that [j] represents. Requires: [j] is a valid
@@ -159,7 +160,12 @@ val remove_property : int -> int -> unit
     account with that property removed *)
 
 val latest_transaction : int -> string
+(** [latest_transaction id] takes in an [id] and returns the last transaction in
+    the respective account's history. *)
+
 val all_transactions : int -> string list
+(** [all_transactions id] takes in an [id] and returns a list of all the
+    transactions in the respective account's history. *)
 
 val set_rent : int -> int -> int -> unit
 (** [set_rent i prop_id rent] takes in the [i] which is the id of the user and
@@ -175,3 +181,5 @@ val set_hoa_upkeep_and_other_expenses : int -> int -> int -> unit
     hoa_upkeep_and_other_expenses updated *)
 
 val transactions_value : int -> int
+(** [transactions_value id] takes in an [id] and returns the value of the
+    transactions in the respective account's history. *)

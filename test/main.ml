@@ -9,68 +9,102 @@ let account1_id = create_account "Sam" "Savings" 5 6000 1000 500
 let account2_id = create_account "James" "Checking" 0 200 25 150
 let account3_id = create_account "Alex" "Credit" 10 20 5 10
 
+(** [owner_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [owner acc]. *)
 let owner_test (name : string) (expected : string) (acc : int) =
   name >:: fun _ -> assert_equal expected (Account.owner acc)
 
+(** [acc_type_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [account_type acc]. *)
 let acc_type_test (name : string) (expected : string) (acc : int) =
   name >:: fun _ -> assert_equal expected (Account.account_type acc)
 
+(** [status_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [status acc]. *)
 let status_test (name : string) (expected : string) (acc : int) =
   name >:: fun _ -> assert_equal expected (Account.status acc)
 
+(** [balance_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [balance acc]. *)
 let balance_test name expected acc =
   name >:: fun _ ->
   assert_equal expected (Account.balance acc) ~printer:string_of_int
 
+(** [limit_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [limit acc]. *)
 let limit_test name expected acc =
   name >:: fun _ ->
   assert_equal expected (Account.limit acc) ~printer:string_of_int
 
+(** [maximum_test name expected acc] constructs an OUnit test named [name] that
+    asserts the quality of [expected] with [maximum acc]. *)
 let maximum_test name expected acc =
   name >:: fun _ ->
   assert_equal expected (Account.maximum acc) ~printer:string_of_int
 
+(** [withdraw_raiseM name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [withdraw acc]. *)
 let withdraw_raiseM name acc n =
   name >:: fun _ ->
   assert_raises (Account.MaximumExceeded n) (fun () -> Account.withdraw acc n)
 
+(** [withdraw_raiseL name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [withdraw acc]. *)
 let withdraw_raiseL name acc n =
   name >:: fun _ ->
   assert_raises (Account.LimitExceeded n) (fun () -> Account.withdraw acc n)
 
+(** [withdraw_raiseINA name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [withdraw acc]. *)
 let withdraw_raiseINA name acc n =
   name >:: fun _ ->
   assert_raises Account.InactiveAccount (fun () -> Account.withdraw acc n)
 
+(** [withdraw_raiseI name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [withdraw acc]. *)
 let withdraw_raiseI name acc n =
   name >:: fun _ ->
   assert_raises Account.InsufficientFunds (fun () -> Account.withdraw acc n)
 
+(** [transfer_raiseM name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [transfer acc]. *)
 let transfer_raiseM name acc1 acc2 n =
   name >:: fun _ ->
   assert_raises (Account.MaximumExceeded n) (fun () ->
       Account.transfer acc1 acc2 n)
 
+(** [transfer_raiseL name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [transfer acc]. *)
 let transfer_raiseL name acc1 acc2 n =
   name >:: fun _ ->
   assert_raises (Account.LimitExceeded n) (fun () ->
       Account.transfer acc1 acc2 n)
 
+(** [transfer_raiseI name expected acc] constructs an OUnit test named [name]
+    that asserts that [expected] is raised in [transfer acc]. *)
 let transfer_raiseI name acc1 acc2 n =
   name >:: fun _ ->
   assert_raises Account.InsufficientFunds (fun () ->
       Account.transfer acc1 acc2 n)
 
+(** [latest_transaction_test name expected acc] constructs an OUnit test named
+    [name] that asserts the quality of [expected] with [latest_transaction acc]. *)
 let latest_transaction_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.latest_transaction acc)
 
+(** [all_transactions_test name expected acc] constructs an OUnit test named
+    [name] that asserts the quality of [expected] with [all_transactions acc]. *)
 let all_transactions_test name expected acc =
   name >:: fun _ -> assert_equal expected (Account.all_transactions acc)
 
+(** [stocks_value_test name expected acc] constructs an OUnit test named [name]
+    that asserts the quality of [expected] with [stocks_value acc]. *)
 let stocks_value_test name expected acc =
   name >:: fun _ ->
   assert_equal expected (Account.stocks_value acc) ~printer:string_of_int
 
+(** [transactions_value_test name expected acc] constructs an OUnit test named
+    [name] that asserts the quality of [expected] with [transactions_value acc]. *)
 let transactions_value_test name expected acc =
   name >:: fun _ ->
   assert_equal expected (Account.transactions_value acc) ~printer:string_of_int

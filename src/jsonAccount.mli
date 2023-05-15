@@ -6,6 +6,4 @@
     For examples, the specifications in this interface reference the example
     "Sample" adventure found in [data/Sample.json]. *)
 
-type json
-
 val acc_to_json : int -> Yojson.Basic.t

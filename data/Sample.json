@@ -21,17 +21,17 @@
   "properties": [
     {
       "id": 1,
-      "remaining_mortgage": 33444448,
-      "mortgage_monthly_cost": 97222,
-      "current_rental_income": 0,
-      "hoa_upkeep_and_other_expenses": 25000
+      "Remaining Mortgage": 33444448,
+      "Mortgage Monthly Cost": 97222,
+      "Current Rental Income": 0,
+      "Hoa, Upkeep, and other Expenses": 25000
     },
     {
       "id": 2,
-      "remaining_mortgage": 5833340,
-      "mortgage_monthly_cost": 16666,
-      "current_rental_income": 200000,
-      "hoa_upkeep_and_other_expenses": 12000
+      "Remaining Mortgage": 5833340,
+      "Mortgage Monthly Cost": 16666,
+      "Current Rental Income": 200000,
+      "Hoa, Upkeep, and other Expenses": 12000
     }
   ],
   "history": [

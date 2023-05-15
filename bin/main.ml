@@ -230,6 +230,10 @@ let rec inFile account =
       wait 0.2;
       print_endline "";
       deactivate_acct account
+  | "get stock value" ->
+      wait 0.2;
+      print_endline "";
+      get_stock_value account
   | "quit" -> quit_save account
   | _ ->
       print_endline "";
@@ -357,6 +361,15 @@ and deactivate_acct account =
     print_endline "";
     inFile account)
 
+and get_stock_value account =
+  ANSITerminal.print_string [ ANSITerminal.blue ] "Crunching numbers ...";
+  print_endline "";
+  print_endline "";
+  let amount = string_of_int (Finance.Account.stocks_value account) in
+  ANSITerminal.print_string [ ANSITerminal.blue ] "📈 Stock value: ";
+  print_endline (amount ^ "$");
+  inFile account
+
 let rec accessFile file_name =
   print_endline "";
   ANSITerminal.print_string [ ANSITerminal.blue ] "Accesssing account: ";
@@ -384,8 +397,16 @@ let rec accessFile file_name =
     print_endline "";
     wait 0.5;
     file_name_ref := direc_file_prefix ^ file_name ^ ".json";
-    let account = Finance.Account.from_json (file_name |> parse_json) in
-    inFile account)
+    try
+      let account = Finance.Account.from_json (file_name |> parse_json) in
+      inFile account
+    with Type_error _ ->
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.red ]
+        " ⛔ This Account Sheet is malformed! Please adhere to the Account \
+         Sheet format  ⛔ ";
+      print_endline "";
+      start_query ())
   else (
     print_endline "";
     ANSITerminal.print_string [ ANSITerminal.yellow ]
@@ -399,7 +420,7 @@ let rec accessFile file_name =
     | "quit" -> quit ()
     | file_name -> accessFile file_name)
 
-let rec start_query () =
+and start_query () =
   wait 0.3;
   print_endline "Would you like to access an existing account 🧾 ? (y/n)";
   print_string "> ";

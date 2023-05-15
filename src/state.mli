@@ -1,3 +1,9 @@
+(** Representation of dynamic account state.
+
+    This module represents the state of an account as it is being used,
+    including the account's stocks, the transactions that have been done, and
+    properties owned. *)
+
 type stock_state = {
   shares : int;
   cur_value_share : int;

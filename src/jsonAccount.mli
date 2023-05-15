@@ -1,4 +1,4 @@
-(** JSon representation of an account
+(** JSON representation of an account
 
     This module represents the Json equivalent of account.ml. It supports taking
     an existing account and converting it to a Json file

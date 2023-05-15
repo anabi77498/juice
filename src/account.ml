@@ -169,6 +169,10 @@ let status i =
   let acc = get_acc i in
   status_of_account acc.status
 
+let is_active i =
+  let acc = get_acc i in
+  acc.status = Active
+
 let account_interest i =
   let acc = get_acc i in
   acc.account_interest

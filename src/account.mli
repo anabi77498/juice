@@ -99,6 +99,10 @@ val activate : int -> unit
 (** [activate id] takes in an [id] and sets the status of the respective account
     to Active. *)
 
+val is_active : int -> bool
+(** [is_active id] takes in an [id] and returns true if the account is active
+    else false if it's not active *)
+
 val deactivate : int -> unit
 (** [activate id] takes in an [id] and sets the status of the respective account
     to Inactive. *)

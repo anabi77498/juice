@@ -8,9 +8,13 @@
     "Sample" adventure found in [data/Sample.json]. *)
 
 exception LimitExceeded of int
+(** Raised when account limit is exceeded. *)
 exception MaximumExceeded of int
+(** Raised when account maximum is exceeded. *)
 exception InactiveAccount
+(** Raised when inactive account is operated upon. *)
 exception InsufficientFunds
+(** Raised when account balance is exceeded. *)
 
 type t
 (** The abstract type of values representing accounts. *)

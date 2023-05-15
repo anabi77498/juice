@@ -10,7 +10,7 @@ let acc_to_json (acc_id : int) : Yojson.Basic.t =
       ("balance", `Int (Account.balance acc_id));
       ("limit", `Int (Account.limit acc_id));
       ("maximum", `Int (Account.maximum acc_id));
-      ("stocks", `List []);
-      ("properties", `List []);
-      ("history", `List []);
+      ("stocks", Account.stock_to_json acc_id);
+      ("properties", Account.prop_to_json acc_id);
+      ("history", Account.history_to_json acc_id);
     ]

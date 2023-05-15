@@ -228,6 +228,10 @@ let rec inFile account =
       wait 0.2;
       print_endline "";
       get_stock_value account
+  | "buy stock" ->
+      wait 0.2;
+      print_endline "";
+      buy_stock account
   | "start transfer" ->
       wait 0.2;
       print_endline "";
@@ -501,6 +505,51 @@ and transfer account =
           transfer account
       end
   end
+
+and buy_stock account =
+  if Finance.Account.is_active account = false then (
+    print_endline "";
+    ANSITerminal.print_string [ ANSITerminal.red ]
+      " ⛔ This account is not active for stock buying ⛔ ";
+    print_endline "";
+    inFile account)
+  else
+    ANSITerminal.print_string [ ANSITerminal.blue ]
+      "What stock would you like to buy. Input the ticker symbol";
+  print_endline "";
+  print_string "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | "return" -> inFile account
+  | "quit" -> quit_save account
+  | api_stock -> (
+      print_endline "";
+      ANSITerminal.print_string [ ANSITerminal.blue ]
+        "How much would you like to buy?";
+      print_endline "";
+      print_string "> ";
+      match read_line () with
+      | exception End_of_file -> ()
+      | "return" -> inFile account
+      | "quit" -> quit_save account
+      | shares_amount -> (
+          let int_amt = int_of_string shares_amount in
+          print_endline "";
+          ANSITerminal.print_string [ ANSITerminal.blue ]
+            "What is the value of the stock?";
+          print_endline "";
+          print_string "> ";
+          match read_line () with
+          | exception End_of_file -> ()
+          | "return" -> inFile account
+          | "quit" -> quit_save account
+          | share_val ->
+              let int_shares_val = int_of_string share_val in
+              Finance.Account.buy_stock account int_amt int_shares_val api_stock;
+              print_endline "";
+              ANSITerminal.print_string [ ANSITerminal.green ]
+                "Stock has been bought and added to your portfolio!";
+              inFile account))
 
 and get_mortgage account =
   if Finance.Account.is_active account = false then (

@@ -1,4 +1,4 @@
-# Juice Finance App
+# Juice Finance App 💰 
 
 *A joint project by Asad Nabi, Giorgi Berndt, and Nathan Maidi*
 
@@ -8,10 +8,21 @@ Accounts registered as local JSON files structured as a yoJson tree.
 
 The interface is via the terminal and allows for frequent use and saving of your changes.
 
-## Installation
+## Installation 🔨 
 
+1. Clone this repository
 
-## Functionality
+2. Navigate to the root directory via terminal
+
+3. If applicable, ensure that all JSON data (in yoJson format) is stored in /data directory
+
+4. Run `make juice` to access the application
+
+5. The `help` command provides you with a list of commands that can be used
+
+## Functionality 📝
+
+This is not an exhaustive list
 
 - Creating an account log / accessing an existing account log
 - Recording property & stock purchases
@@ -19,5 +30,6 @@ The interface is via the terminal and allows for frequent use and saving of your
 - Transferring between accounts
 - Recording withdrawal/deposits
 - Projected balance reports based upon account interest rates
+- Stock investment insights
 - Mortgage approval algorithm that gives an internal approval rating of a mortgage application
 - Dynamic JSON file creation / updating / deleting

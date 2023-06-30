@@ -1,5 +1,3 @@
-# juice
+# Juice Finance App
 
-Asad Nabi (an448)
-Giorgi Berndt (gb449)
-Nathan Maidi (nm542)
+A joint project by Asad Nabi, Giorgi Berndt, and Nathan Maidi

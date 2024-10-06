@@ -1,7 +1,5 @@
 # Juice Finance App 💰 
 
-*A joint project by Asad Nabi, Giorgi Berndt, and Nathan Maidi*
-
 Juice Finance allows for organization, management and insights of your bank account and assets. It allows you to handle multiple bank accounts and get a clear understanding of your financial status, projected financial changes and insights related to real estate and stock assets. Our goal was to create a financial service that can replicate banking features and allow you to experiment with the money in your account without any risk! 
 
 Accounts registered as local JSON files structured as a yoJson tree. 
